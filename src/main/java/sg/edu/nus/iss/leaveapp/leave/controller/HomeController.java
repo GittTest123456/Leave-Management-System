@@ -1,22 +1,18 @@
 package sg.edu.nus.iss.leaveapp.leave.controller;
 
-import java.security.Principal;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-import sg.edu.nus.iss.leaveapp.leave.model.LeaveApplication;
-import sg.edu.nus.iss.leaveapp.leave.model.Role;
+import sg.edu.nus.iss.leaveapp.leave.model.DefaultLeaveEntitlement;
 import sg.edu.nus.iss.leaveapp.leave.model.User;
-import sg.edu.nus.iss.leaveapp.leave.repository.RoleRepository;
-import sg.edu.nus.iss.leaveapp.leave.repository.UserRepository;
-import sg.edu.nus.iss.leaveapp.leave.service.UserDetailsServiceImpl;
+import sg.edu.nus.iss.leaveapp.leave.service.DefaultLeaveEntitlementService;
+import sg.edu.nus.iss.leaveapp.leave.service.UserService;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -24,9 +20,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class HomeController {
 
 	@Autowired
-	private UserRepository UserRepo;
+	private UserService userService;
 	@Autowired
-	private RoleRepository RoleRepo;
+	private DefaultLeaveEntitlementService defaultLeaveEntitlementService;
 
 	@GetMapping({"/","/login"})
     public String login() {
@@ -35,10 +31,10 @@ public class HomeController {
 
     @GetMapping("/welcome")
 	public String getWelcomePage(@AuthenticationPrincipal UserDetails userDetails,
-	Model model) {
+	Model model,HttpSession sessionObj) {
 		String staffID = userDetails.getUsername();
-        User user = UserRepo.getUserByUsername(staffID);
-		model.addAttribute("fullName", user.getFullname());
+        User user = userService.getUserByUsername(staffID);
+		model.addAttribute("fullName", user.getFullName());
 		model.addAttribute("designation", user.getDesignation());
 		return "welcomePage";
 	}
@@ -52,13 +48,11 @@ public class HomeController {
 	public String getEmployeePage(@AuthenticationPrincipal UserDetails userDetails,
 	Model model) {
 		String staffID = userDetails.getUsername();
-        User user = UserRepo.getUserByUsername(staffID);
+        User user = userService.getUserByUsername(staffID);
 		String designation = user.getDesignation();
-		Role role = RoleRepo.findByroleName(designation);
-		Integer annualleave = role.getAnnualLeave();
-		Integer medicalleave = role.getMedicalLeave();
-		model.addAttribute("medicalleave", medicalleave);
-		model.addAttribute("annualleave", annualleave);
+		DefaultLeaveEntitlement defaultLeave = defaultLeaveEntitlementService.findBydesignation(designation);
+		model.addAttribute("medicalleave", defaultLeave.getMedicalLeave());
+		model.addAttribute("annualleave", defaultLeave.getAnnualLeave());
 		model.addAttribute("staffleave", user.getStaffleave());
 		return "empPage";
 	}

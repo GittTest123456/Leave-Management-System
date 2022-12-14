@@ -14,39 +14,32 @@
 <body>
     <div class="container my-2 center">
 
-        <h3>General Leave Application Form</h3>
-        Information on annual leave computation: 
-        <br>If the leave period is more than 14 calendar days, weekends/public holidays are included. 
-        <br>Otherwise, weekends/public holidays are excluded.
-        <br> If you would like to apply HALF DAY leave which is only applicable for compensation leave, 
-        <br> please click on this button <a th:href="@{/emp/compensationleaveonly}"><button class="btn btn-primary btn-sm mb-3">Apply HALF DAY compensation leave</button></a>
-        <br>
-        Otherwise, for application of FULL DAY leave which is applicable to all three leave types 
-        <br>(i.e. Annual,Medical and Compensation Leave), please proceed with this form.
+        <h3>HALF DAY Compensation Leave Application Form</h3>
+        Please note this form is only for application of HALF DAY Compensation Leave. 
+        <br>Please indicate the date (start date same as end date) and AM or PM for the HALF DAY Compensation Leave.
         <br>
         <table>
             <tr><td>Staff ID</td><td><span sec:authentication="name">Username</span></td></tr>
-            <form th:action="@{/emp/leaveapplication}" th:object="${leaveApplication}" method="POST">
+            <form th:action="@{/emp/compensationleaveonly}" th:object="${compensationLeaveApplication}" method="POST">
                 <tr>
-            <td>*Start Date (yyyy-mm-dd) </td>
+            <td>*Date (yyyy-mm-dd) </td>
             <td><input type="date" class="form-control" min="2023-01-01" max="2023-12-31" th:field="*{startDate}">
             <span class="alert alert-warning" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></td></span>
         </tr><br>
-        <tr><td>*End Date (yyyy-mm-dd)</td><td><input type="date"  class="form-control" min="2023-01-01" max="2023-12-31" th:field="*{endDate}">
-            <span class="alert alert-warning" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></td></tr>
-            <tr>  <td> *Leave Type</td> <td>
-                <select class="form-control" th:field="*{leaveType}">
-                    <option value="">Select</option>
-                    <option value="annual_leave">Annual Leave</option>
-                    <option value="medical_leave">Medical Leave</option>
-                    <option value="compensation_leave">Compensation Leave</option>
-                </select> <span class="alert alert-warning" th:if="${#fields.hasErrors('leaveType')}" th:errors="*{leaveType}"></td>
+        <tr>  <td> *Select Morning or Afternoon</td> <td>
+            <select class="form-control" th:field="*{halfdayIndicator}">
+                <option value="AM">Morning</option>
+                <option value="PM">Afternoon</option>
+            </select> <span class="alert alert-warning" th:if="${#fields.hasErrors('halfdayIndicator')}" th:errors="*{halfdayIndicator}"></td>
+        </tr>
+        <tr><td>Leave Type </td>
+            <td><input type="text" class="form-control" th:field="*{leaveType}" readonly> 
             </tr>
             <tr><td>*Reason for taking leave </td>
             <td><input type="text" class="form-control" th:field="*{reason}"> 
             <span class="alert alert-warning" th:if="${#fields.hasErrors('reason')}" th:errors="*{reason}"></td></tr>
             <tr><td>Contact Number (if going overseas) </td>
-            <td><input type="number" class="form-control" th:field="*{contactNumber}"> </td></tr>
+            <td><input type="number" class="form-control" th:field="*{contactNumber}"></td></tr>
              <tr> <td>Work Dissemination (if any) </td>
             <td><input type="text" class="form-control" th:field="*{dissemination}"></td> </tr>
             <tr><td colspan="2"><br>Please note fields with * are mandatory details.</td></tr>

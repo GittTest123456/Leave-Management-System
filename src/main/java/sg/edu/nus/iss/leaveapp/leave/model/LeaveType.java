@@ -17,5 +17,4 @@ public class LeaveType {
 	
 	private String granularity;
 	
-	private String AnnualDays;
 }

@@ -1,36 +1,28 @@
 package sg.edu.nus.iss.leaveapp.leave.controller;
 
-import java.security.Principal;
+import java.util.List;
 
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import sg.edu.nus.iss.leaveapp.leave.model.LeaveApplication;
-import sg.edu.nus.iss.leaveapp.leave.model.LeaveEventEnum;
 import sg.edu.nus.iss.leaveapp.leave.model.User;
-import sg.edu.nus.iss.leaveapp.leave.repository.LeaveApplicationRepository;
-import sg.edu.nus.iss.leaveapp.leave.repository.UserRepository;
-import sg.edu.nus.iss.leaveapp.leave.service.UserDetailsServiceImpl;
+import sg.edu.nus.iss.leaveapp.leave.service.UserService;
 
-import org.springframework.security.core.userdetails.UserDetails;
+
 
 @Controller
 @RequestMapping("adm")
 public class AdminController {
+	@Autowired
+	private UserService userService;
 	@GetMapping("/managestaff")
-	public String manageStaff() {
+	public String manageStaff(Model model) {
+        List<User> users = userService.getUserList();
+        model.addAttribute("staffs", users);
 		return "managestaff";
 	}
     @GetMapping("/managestaffleave")
@@ -46,6 +38,21 @@ public class AdminController {
     @GetMapping("/manageleavetypes")
 	public String manageLeaveTypes() {
 		return "manageleavetypes";
+	}
+
+    @GetMapping("/managehierarchy")
+	public String getHierarchy() {
+		return "managehierarchy";
+	}
+
+    @GetMapping("/updatestaff")
+	public String updateStaff() {
+		return "updatestaff";
+	}
+    
+    @GetMapping("/addstaff")
+	public String addstaff() {
+		return "addstaff";
 	}
 
     

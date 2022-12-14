@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Application</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container my-2 center">
+        <h6>Staff ID </td><td><span sec:authentication="name">Username</span></h6>
+        <table border="1">
+            <tr>
+                <td>Leave Application ID</td>
+                <td>Date of Application(yyyy-mm-dd)</td>
+                <td>Start Date (yyyy-mm-dd)</td>
+                <td>End Date (yyyy-mm-dd)</td>
+                <td>Time of the day (if applicable)</td>
+                <td>Leave Type</td>
+                <td>NumberOfDays</td>
+                <td>Reason for taking leave</td>
+                <td>Contact Number (if going overseas)</td>
+                <td>Work Dissemination(if any)</td>
+                <td>Date of Status (yyyy-mm-dd)</td>
+                <td>Status</td>
+            </tr>
+            <tr th:each="leave: ${leaveApplicationList}">
+                <td th:text="${leave.id}"></td>
+                <td th:text="${leave.dateOfApplication}"></td>
+                <td th:text="${leave.startDate}"></td>
+                <td th:text="${leave.endDate}"></td>
+                <td th:text="${leave.halfdayIndicator}"></td>
+                <td th:text="${leave.leaveType}"></td>
+                <td th:text="${leave.numberOfDays}"></td>
+                <td th:text="${leave.reason}"></td>
+                <td th:text="${leave.contactNumber}"></td>
+                <td th:text="${leave.dissemination}"></td>
+                <td th:text="${leave.dateOfStatus}"></td>
+                <td th:text="${leave.Status}"></td>
+            </tr>
+        </table>
+
+        </body>
+        </html>

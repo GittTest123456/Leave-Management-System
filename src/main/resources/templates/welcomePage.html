@@ -22,6 +22,8 @@
             <td>
                 Full Name: <span th:text="${fullName}"> </span>
                 <br>
+                Staff ID: <span sec:authentication="name">Username</span>
+                <br>
                 Designation: <span th:text="${designation}"></span>
                 <br>
                 Roles:<span sec:authentication="principal.authorities">Roles</span></td>

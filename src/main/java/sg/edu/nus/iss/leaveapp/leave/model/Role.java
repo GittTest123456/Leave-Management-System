@@ -1,6 +1,5 @@
 package sg.edu.nus.iss.leaveapp.leave.model;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,21 +21,11 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column (name= "roleId")
     private Long id;
-    
-    private Integer annualLeave;
-    private Integer medicalLeave;
     private String roleName;
 
     public Role(String roleName){
         this.roleName = roleName;
-        if (roleName.equals("Manager")){
-            this.annualLeave = 18;
-            this.medicalLeave = 60;
-        }
-        if (roleName.equals("Employee")){
-            this.annualLeave = 14;
-            this.medicalLeave = 60;
-        }
     }
+
     
 }

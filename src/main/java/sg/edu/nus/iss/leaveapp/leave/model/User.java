@@ -12,10 +12,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,18 +38,31 @@ public class User {
 
     @NotBlank(message = "The Full Name can't be null")
     @Column(name= "StaffFullName",columnDefinition = "nvarchar(150) not null")
-    private String fullname;
+    private String fullName;
 
     private String password;
 
     private String designation;
 
+    @NotBlank
+    @Pattern(regexp = "(\\8|9)[0-9]{7}")
+    private String mobilePhone;
+
+    @NotBlank
+    @Email(message = "Email should be valid")
+    @Size(max = 200)
+    @Pattern(regexp = ".+@.+\\..+", message = "Wrong email!")
+    private String email;
+
+
     private String reportingStaffID;
 
-    public User(String username, String password, String fullname, String designation, String reportingStaffID){
+    public User(String username, String password, String fullName, String mobilePhone, String email, String designation, String reportingStaffID){
         this.username = username;
         this.password = password;
-        this.fullname = fullname;
+        this.fullName = fullName;
+        this.mobilePhone = mobilePhone;
+        this.email = email;
         this.designation = designation;
         this.reportingStaffID = reportingStaffID;
     }
@@ -55,6 +72,12 @@ public class User {
     private List<Role> roles;
 
     @OneToOne(mappedBy="user")
-    private LeaveEntitlement staffleave;
+    private LeaveBalance staffleave;
+
+    @OneToMany(mappedBy="user")
+    private List<LeaveApplication> leaveApplication;
+
+    @ManyToOne
+    private DefaultLeaveEntitlement defaultLeaveEntitlement;
     
 }

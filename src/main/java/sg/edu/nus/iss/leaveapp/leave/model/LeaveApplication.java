@@ -30,31 +30,30 @@ public class LeaveApplication {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
-    private Long staffID;
-    @NotBlank(message = "leaveType cannot be blank.")
+    @NotNull(message = "Leave Type cannot be blank.")
+    @NotBlank(message = "LeaveType cannot be blank.")
     private String leaveType;
     @NotNull(message = "Start Date cannot be blank.")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date startDate;
-    @NotNull(message = "End Date cannot be blank.")
+    private LocalDate startDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date endDate;
+    private LocalDate endDate;
     @NotBlank(message = "Reason cannot be blank.")
     private String reason;
     private String dissemination;
     private Long contactNumber;
+    private Double numberOfDays;
+    private String halfdayIndicator;
 
-    @Column(name = "status", columnDefinition = "ENUM('APPROVED', 'REJECTED', 'PENDING', 'CANCELLED')")
+    @Column(name = "status", columnDefinition = "ENUM('APPROVED', 'REJECTED', 'PENDING', 'CANCELLED', 'DELETED')")
 	@Enumerated (EnumType.STRING)
 	private LeaveEventEnum status;
 	
-	private Date dateOfApplication;
+	private LocalDate dateOfApplication;
 	
-	private Date dateOfStatus;
+	private LocalDate dateOfStatus;
 
-    public LeaveApplication(Long staffID, String leaveType, Date startDate, Date endDate, String reason, String dissemination, Long contactNumber){
-        this.staffID = staffID;
+    public LeaveApplication(Long staffID, String leaveType, LocalDate startDate, LocalDate endDate, String reason, String dissemination, Long contactNumber){
         this.leaveType = leaveType;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -64,7 +63,6 @@ public class LeaveApplication {
     }
 
     @ManyToOne(fetch = FetchType.EAGER)
-    //
     private User user;
 
 

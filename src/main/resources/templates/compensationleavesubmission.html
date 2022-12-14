@@ -15,12 +15,13 @@
     <div class="container my-2 center">
 
         <h3>Leave Submitted</h3>
-        <table border="1" th:object="${leaveApplication}">
+        <table border="1" th:object="${compensationLeaveApplication}">
             <tr><td>Staff ID</td><td><span sec:authentication="name">Username</span></td></tr>
-            <tr><td>Start Date (yyyy-mm-dd))</td>
+            <tr><td>Date (yyyy-mm-dd))</td>
             <td th:text="*{startDate}"> </td></tr>
-            <tr><td>End Date (yyyy-mm-dd)) </td>
-                <td th:text="*{endDate}"> </td></tr>
+            <tr><td> Time of the day </td>
+                <td th:text="*{halfdayIndicator}"> </td></tr>
+                </tr>
                 <tr><td>Leave Type </td>
                     <td th:text="*{leaveType}"> </td></tr>
                     <tr><td>Number of days of intended leave </td>

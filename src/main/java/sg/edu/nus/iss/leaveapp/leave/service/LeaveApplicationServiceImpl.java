@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -37,6 +38,27 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         return true;
 
     }
+
+    @Override
+    @Transactional
+    public boolean saveUpdateLeaveApplication(LeaveApplication oldLeaveApplication, LeaveApplication newLeaveApplication){
+        leaveBalanceService.increaseLeave(oldLeaveApplication);
+        leaveBalanceService.reduceLeave(newLeaveApplication);
+        oldLeaveApplication.setContactNumber(newLeaveApplication.getContactNumber());
+        oldLeaveApplication.setDateOfApplication(newLeaveApplication.getDateOfApplication());
+        oldLeaveApplication.setDateOfStatus(newLeaveApplication.getDateOfStatus());
+        oldLeaveApplication.setDissemination(newLeaveApplication.getDissemination());
+        oldLeaveApplication.setStartDate(newLeaveApplication.getStartDate());
+        oldLeaveApplication.setEndDate(newLeaveApplication.getEndDate());
+        oldLeaveApplication.setHalfdayIndicator(newLeaveApplication.getHalfdayIndicator());
+        oldLeaveApplication.setLeaveType(newLeaveApplication.getLeaveType());
+        oldLeaveApplication.setNumberOfDays(newLeaveApplication.getNumberOfDays());
+        oldLeaveApplication.setReason(newLeaveApplication.getReason());
+        leaveApplicationRepo.save(oldLeaveApplication);
+        return true;
+
+    }
+
     @Override
     public boolean checkIfWorkingDay(LocalDate startDate){
         if ((startDate.getDayOfWeek() == DayOfWeek.SATURDAY)|| (startDate.getDayOfWeek() == DayOfWeek.SUNDAY)){
@@ -110,12 +132,14 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     }
 
     @Override
-    public boolean checkIfOverlapLeave(LocalDate startDate, LocalDate endDate,User user){
+    public boolean checkIfOverlapLeave(LocalDate startDate, LocalDate endDate,User user,Long ID){
         List<LeaveApplication> userApplications = leaveApplicationRepo.findByUser(user);
         List<LeaveApplication> userPendingAndApprApplications = new ArrayList<LeaveApplication>();
         for (LeaveApplication leave: userApplications){
             if(leave.getStatus() == LeaveEventEnum.PENDING || leave.getStatus() == LeaveEventEnum.APPROVED ){
-                userPendingAndApprApplications.add(leave);
+                if(leave.getId() != ID){
+                    userPendingAndApprApplications.add(leave);
+                }
             }
         }
         for (LeaveApplication leave: userPendingAndApprApplications){
@@ -125,14 +149,15 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         }
         return false;
     }
-
+    @Override
     public boolean checkIfHalfDayOverlap(LocalDate Date, String halfdayIndicator, User user){
-        List<LeaveApplication> userApplications = leaveApplicationRepo.findByUser(user);
+        List<LeaveApplication> userApplications = findLeaveApplicationByUser(user);
         List<LeaveApplication> userPendingAndApprFullDayApplications = new ArrayList<LeaveApplication>();
         List<LeaveApplication> userPendingAndApprHalfDayApplications = new ArrayList<LeaveApplication>();
         for (LeaveApplication leave: userApplications){
             if(leave.getStatus() == LeaveEventEnum.PENDING || leave.getStatus() == LeaveEventEnum.APPROVED ){
                 if(leave.getHalfdayIndicator()== null){
+                    //insert the id part
                     userPendingAndApprFullDayApplications.add(leave);
                 }
                 else{
@@ -151,6 +176,16 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
 			}
         }
         return false;
+    }
+
+    @Override
+    public List<LeaveApplication> findLeaveApplicationByUser(User user){
+        return leaveApplicationRepo.findByUser(user);
+
+    }
+    @Override
+    public Optional<LeaveApplication> findLeaveApplicationById(Long id){
+        return leaveApplicationRepo.findById(id);
     }
 
 

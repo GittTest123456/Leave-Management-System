@@ -1,6 +1,7 @@
 package sg.edu.nus.iss.leaveapp.leave.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,6 +20,7 @@ public interface LeaveApplicationRepository extends JpaRepository<LeaveApplicati
     public List<LeaveApplication> findByUser(User user);
     public List<LeaveApplication> findByStatus(LeaveEventEnum status);
     List<LeaveApplication> findPendingAndApprovedApplicationsByUser(@Param("id") String id);
+    Optional<LeaveApplication> findById(Long id);
 
     
 }

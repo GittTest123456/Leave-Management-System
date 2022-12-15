@@ -10,6 +10,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import sg.edu.nus.iss.leaveapp.leave.model.LeaveApplication;
+import sg.edu.nus.iss.leaveapp.leave.model.LeaveEventEnum;
 
 @Component
 public class LeaveApplicationValidator implements Validator {

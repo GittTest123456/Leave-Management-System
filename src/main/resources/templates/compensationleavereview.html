@@ -13,11 +13,14 @@
 
 <body>
     <div class="container my-2 center">
-
+        <div th:if="${compensationLeaveApplication.status == null}">
         <h3>HALF DAY Compensation Leave Application Form</h3>
         Please note this form is only for application of HALF DAY Compensation Leave. 
         <br>Please indicate the date (start date same as end date) and AM or PM for the HALF DAY Compensation Leave.
-        <br>
+        </div>
+        <div th:unless="${compensationLeaveApplication.status == null}">
+            <h3>Update HALF DAY Compensation Leave Application Form</h3>
+            </div>
         <table>
             <tr><td>Staff ID</td><td><span sec:authentication="name">Username</span></td></tr>
             <form th:action="@{/emp/compensationleavesubmission}" th:object="${compensationLeaveApplication}" method="POST">
@@ -26,11 +29,8 @@
             <td><input type="date" class="form-control" min="2023-01-01" max="2023-12-31" th:field="*{startDate}" readonly>
             <span class="alert alert-warning" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></td></span>
         </tr><br>
-        <tr>  <td> *Select Morning or Afternoon</td> <td>
-            <select class="form-control" th:field="*{halfdayIndicator}" readonly>
-                <option value="">Select</option>
-                <option value="AM">Morning</option>
-                <option value="PM">Afternoon</option>
+        <tr>  <td> *Select Morning (AM) or Afternoon (PM)</td> <td>
+            <input type="text" class="form-control" th:field="*{halfdayIndicator}" readonly>
             </select> <span class="alert alert-warning" th:if="${#fields.hasErrors('halfdayIndicator')}" th:errors="*{halfdayIndicator}"></td>
         </tr>
         <tr><td>Leave Type </td>

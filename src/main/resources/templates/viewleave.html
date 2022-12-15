@@ -13,21 +13,24 @@
 
 <body>
     <div class="container my-2 center">
-        <h6>Staff ID </td><td><span sec:authentication="name">Username</span></h6>
-        <table border="1">
+        <h3>Personal Leave History</h3>
+        <br>The leave applications are sorted based on leave application ID. You may view the details of each leave application by clicking on the respective link. 
+        <br>For pending leave, you may update or delete.
+        <br>For approved leave, you may cancel.
+        <h6><br>Staff ID </td><td><span sec:authentication="name">Username</span></h6>
+            <p th:if="${leaveApplicationList == null}"> You have no leave records in the system thus far.</p>
+        <table border="1" th:unless="${leaveApplicationList == null}">
             <tr>
-                <td>Leave Application ID</td>
-                <td>Date of Application(yyyy-mm-dd)</td>
-                <td>Start Date (yyyy-mm-dd)</td>
-                <td>End Date (yyyy-mm-dd)</td>
-                <td>Time of the day (if applicable)</td>
+                <td>Leave Application 
+                    <br> ID</td>
+                <td>Date of Application<br>(yyyy-mm-dd)</td>
+                <td>Start Date <br> (yyyy-mm-dd)</td>
+                <td>End Date <br> (yyyy-mm-dd)</td>
+                <td>Time of the day <br> (if applicable)</td>
                 <td>Leave Type</td>
-                <td>NumberOfDays</td>
-                <td>Reason for taking leave</td>
-                <td>Contact Number (if going overseas)</td>
-                <td>Work Dissemination(if any)</td>
-                <td>Date of Status (yyyy-mm-dd)</td>
+                <td>Number Of <br>Days</td>
                 <td>Status</td>
+                <td>More Details</td>
             </tr>
             <tr th:each="leave: ${leaveApplicationList}">
                 <td th:text="${leave.id}"></td>
@@ -37,13 +40,16 @@
                 <td th:text="${leave.halfdayIndicator}"></td>
                 <td th:text="${leave.leaveType}"></td>
                 <td th:text="${leave.numberOfDays}"></td>
-                <td th:text="${leave.reason}"></td>
-                <td th:text="${leave.contactNumber}"></td>
-                <td th:text="${leave.dissemination}"></td>
-                <td th:text="${leave.dateOfStatus}"></td>
                 <td th:text="${leave.Status}"></td>
+                <td><a th:href="@{/emp/viewleavedetails(id=${leave.id})}" class="btn btn-primary btn-sm mb-3">Click here</a></td>
             </tr>
         </table>
+        <br><a th:href="@{/emp}">RETURN TO LEAVE OVERVIEW PAGE</a>
+        <br>
+        <a th:href="@{/welcome}">RETURN TO HOME PAGE</a>
+        <br>
+                <a th:href="@{/logout}">LOGOUT</a>
+</div>
 
         </body>
         </html>

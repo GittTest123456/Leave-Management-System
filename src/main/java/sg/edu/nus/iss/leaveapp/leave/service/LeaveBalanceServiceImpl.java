@@ -41,5 +41,26 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService {
         leaveBalanceRepo.save(leaveBalance);
         
     }
+
+    @Override
+    public void increaseLeave(LeaveApplication oldleaveApplication){
+        User user =oldleaveApplication.getUser();
+        LeaveBalance leaveBalance = leaveBalanceRepo.findByUser(user);
+        String leaveType = oldleaveApplication.getLeaveType();
+        if(leaveType.equals("annual_leave")){
+            Double currentAnnualLeave = leaveBalance.getAnnualLeave();
+            leaveBalance.setAnnualLeave(currentAnnualLeave + oldleaveApplication.getNumberOfDays());
+        }
+        else if(leaveType.equals("medical_leave")){
+            Double currentMedicalLeave = leaveBalance.getMedicalLeave();
+            leaveBalance.setMedicalLeave(currentMedicalLeave + oldleaveApplication.getNumberOfDays());
+        }
+        else{
+            Double currentCompensationLeave = leaveBalance.getCompensationLeave();
+            leaveBalance.setCompensationLeave(currentCompensationLeave + oldleaveApplication.getNumberOfDays());
+        }
+        leaveBalanceRepo.save(leaveBalance);
+        
+    }
     
 }

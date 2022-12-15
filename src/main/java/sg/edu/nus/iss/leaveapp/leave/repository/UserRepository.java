@@ -1,5 +1,7 @@
 package sg.edu.nus.iss.leaveapp.leave.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -12,5 +14,7 @@ import sg.edu.nus.iss.leaveapp.leave.model.User;
 public interface UserRepository extends JpaRepository<User, String> {
     @Query("SELECT u FROM User u WHERE u.username = :username")
     User getUserByUsername(@Param("username") String username);
+
+    List<User> findByReportingStaffID(String reportingStaffID);
     
 }

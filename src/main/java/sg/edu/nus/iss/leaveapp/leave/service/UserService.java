@@ -16,5 +16,7 @@ public interface UserService {
     Boolean deleteUserByUsername(String username);
 
     User getUserByUsername(String username);
+
+    List<User> findSubordinateByManagerID(String managerID);
     
 }

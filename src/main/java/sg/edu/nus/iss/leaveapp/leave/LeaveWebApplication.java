@@ -30,14 +30,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import sg.edu.nus.iss.leaveapp.leave.model.DefaultLeaveEntitlement;
+import sg.edu.nus.iss.leaveapp.leave.model.LeaveApplication;
 import sg.edu.nus.iss.leaveapp.leave.model.LeaveBalance;
-import sg.edu.nus.iss.leaveapp.leave.model.LeaveType;
+import sg.edu.nus.iss.leaveapp.leave.model.LeaveEventEnum;
 import sg.edu.nus.iss.leaveapp.leave.model.PublicHoliday;
 import sg.edu.nus.iss.leaveapp.leave.model.Role;
 import sg.edu.nus.iss.leaveapp.leave.model.User;
 import sg.edu.nus.iss.leaveapp.leave.service.DefaultLeaveEntitlementService;
+import sg.edu.nus.iss.leaveapp.leave.service.LeaveApplicationService;
 import sg.edu.nus.iss.leaveapp.leave.service.LeaveBalanceService;
-import sg.edu.nus.iss.leaveapp.leave.service.LeaveTypeService;
 import sg.edu.nus.iss.leaveapp.leave.service.PublicHolidayService;
 import sg.edu.nus.iss.leaveapp.leave.service.RoleService;
 import sg.edu.nus.iss.leaveapp.leave.service.UserService;
@@ -56,7 +57,7 @@ public class LeaveWebApplication {
 
 	@Bean
 	public CommandLineRunner commandLineRun(UserService userService, RoleService roleService, LeaveBalanceService leaveBalanceService, 
-	DefaultLeaveEntitlementService defaultLeaveEntitlementService, LeaveTypeService leaveTypeService, PublicHolidayService publicHolService){
+	DefaultLeaveEntitlementService defaultLeaveEntitlementService,PublicHolidayService publicHolService, LeaveApplicationService leaveAppService){
 		return args -> {
 			System.out.println("---- Create some roles");
 			Role admin = roleService.saveRole(new Role("Admin"));
@@ -64,13 +65,15 @@ public class LeaveWebApplication {
 			Role manager = roleService.saveRole(new Role("Manager"));
 
 			System.out.println("---- Create some users");
-			User ram = new User("2531", "John123", "John Tan Meng Keng", "92887201", "John@gmail.com", "Administrator", null);
-			User raven = new User("1835", "Tom123", "Tom Lee Shin", "92887888", "Tom@gmail.com","Employee", "2811");
-			User run = new User("2811", "Sally123", "Sally Ang Jean Tee", "92888000", "Sally@gmail.com", "Manager",null);
+			User john = new User("2531", "John123", "John Tan Meng Keng", "92887201", "John@gmail.com", "Administrator", null);
+			User tom = new User("1835", "Tom123", "Tom Lee Shin", "92887888", "Tom@gmail.com","Employee", "2811");
+			User sally = new User("2811", "Sally123", "Sally Ang Jean Tee", "92888000", "Sally@gmail.com", "Manager",null);
+			User jerry = new User("5833", "Jerry123", "Jerry Heng An Tan", "92895888", "Jerry@gmail.com", "Employee","2811");
 
-			ram.setRoles(Arrays.asList(admin));
-			raven.setRoles(Arrays.asList(employee));
-			run.setRoles(Arrays.asList(manager, employee));
+			john.setRoles(Arrays.asList(admin));
+			tom.setRoles(Arrays.asList(employee));
+			sally.setRoles(Arrays.asList(manager, employee));
+			jerry.setRoles(Arrays.asList(employee));
 
 			DefaultLeaveEntitlement manage = new DefaultLeaveEntitlement("Manager");
 			DefaultLeaveEntitlement employ = new DefaultLeaveEntitlement("Employee");
@@ -79,29 +82,35 @@ public class LeaveWebApplication {
 			defaultLeaveEntitlementService.saveDefaultLeaveEntitlement(employ);
 			defaultLeaveEntitlementService.saveDefaultLeaveEntitlement(admins);
 
-			ram.setDefaultLeaveEntitlement(admins);
-			raven.setDefaultLeaveEntitlement(employ);
-			run.setDefaultLeaveEntitlement(manage);
+			john.setDefaultLeaveEntitlement(admins);
+			tom.setDefaultLeaveEntitlement(employ);
+			sally.setDefaultLeaveEntitlement(manage);
+			jerry.setDefaultLeaveEntitlement(employ);
 
-			userService.saveUser(ram);
-			userService.saveUser(raven);
-			userService.saveUser(run);
+			userService.saveUser(john);
+			userService.saveUser(tom);
+			userService.saveUser(sally);
+			userService.saveUser(jerry);
 //since leave entitlement contains the foreign key staff_ID, it can only be set when staff is saved in the database/repository with staff ID.
-			LeaveBalance staffleave1 = new LeaveBalance(ram);
-			LeaveBalance staffleave2 = new LeaveBalance(raven);
-			LeaveBalance staffleave3 = new LeaveBalance(run);
-			staffleave3.setCompensationLeave(2.5);
+			LeaveBalance johnBalanceLeave = new LeaveBalance(john);
+			LeaveBalance tomBalanceLeave = new LeaveBalance(tom);
+			LeaveBalance sallyBalanceLeave = new LeaveBalance(sally);
+			LeaveBalance jerryBalanceLeave = new LeaveBalance(jerry);
+			sallyBalanceLeave.setCompensationLeave(2.5);
+			jerryBalanceLeave.setCompensationLeave(2.5);
+			tomBalanceLeave.setCompensationLeave(2.5);
 
-			leaveBalanceService.saveLeaveBalance(staffleave1);
-			leaveBalanceService.saveLeaveBalance(staffleave2);
-			leaveBalanceService.saveLeaveBalance(staffleave3);
+			leaveBalanceService.saveLeaveBalance(johnBalanceLeave);
+			leaveBalanceService.saveLeaveBalance(tomBalanceLeave);
+			leaveBalanceService.saveLeaveBalance(sallyBalanceLeave);
+			leaveBalanceService.saveLeaveBalance(jerryBalanceLeave);
 
-			LeaveType annualLeave = new LeaveType("annual_leave","1");
-			LeaveType medicalLeave = new LeaveType("medical_leave","1");
-			LeaveType compensationLeave = new LeaveType("compensation_leave","0.5");
-			leaveTypeService.saveLeaveType(annualLeave);
-			leaveTypeService.saveLeaveType(medicalLeave);
-			leaveTypeService.saveLeaveType(compensationLeave);
+			//LeaveType annualLeave = new LeaveType("annual_leave","1");
+			//LeaveType medicalLeave = new LeaveType("medical_leave","1");
+			//LeaveType compensationLeave = new LeaveType("compensation_leave","0.5");
+			//leaveTypeService.saveLeaveType(annualLeave);
+			//leaveTypeService.saveLeaveType(medicalLeave);
+			//leaveTypeService.saveLeaveType(compensationLeave);
 
 			DateTimeFormatter df1 = DateTimeFormatter.ofPattern("dd/MM/yy");
 			Map<String, String> dateofPublicHol = new HashMap<>(){{
@@ -131,6 +140,30 @@ public class LeaveWebApplication {
 			for (PublicHoliday publichol: listOfPublicHol ){
 				publicHolService.savePublicHoliday(publichol);
 			}
+			LeaveApplication leaveApplication = new LeaveApplication((long)2811, "annual_leave", LocalDate.now(), LocalDate.now(), "rest", "great", (long)90000000);
+			leaveApplication.setNumberOfDays(0.5);
+			leaveApplication.setHalfdayIndicator("AM");
+			leaveApplication.setDateOfApplication(LocalDate.now());
+			leaveApplication.setDateOfStatus(LocalDate.now());
+			leaveApplication.setStatus(LeaveEventEnum.APPROVED);
+			leaveApplication.setUser(jerry);
+			leaveAppService.saveLeaveApplication(leaveApplication);
+			LeaveApplication leaveApplication2 = new LeaveApplication((long)2811, "compensation_leave", LocalDate.now(), LocalDate.now(), "rest", "great", (long)90000000);
+			leaveApplication2.setNumberOfDays(0.5);
+			leaveApplication2.setHalfdayIndicator("AM");
+			leaveApplication2.setDateOfApplication(LocalDate.now());
+			leaveApplication2.setDateOfStatus(LocalDate.now());
+			leaveApplication2.setStatus(LeaveEventEnum.APPROVED);
+			leaveApplication2.setUser(tom);
+			leaveAppService.saveLeaveApplication(leaveApplication2);
+			//LeaveApplication leaveApplication2 = new LeaveApplication((long)2811, "compensation_leave", LocalDate.now(), LocalDate.now(), "rest", "great", (long)90000000);
+			//leaveApplication.setNumberOfDays(0.5);
+			//leaveApplication.setHalfdayIndicator("AM");
+			//leaveApplication.setDateOfApplication(LocalDate.now());
+			//leaveApplication.setDateOfStatus(LocalDate.now());
+			//leaveApplication.setStatus(LeaveEventEnum.APPROVED);
+			//leaveApplication.setUser(run);
+			//leaveAppService.saveLeaveApplication(leaveApplication2);
 
 		
 			

@@ -18,7 +18,9 @@ public interface LeaveApplicationService {
     public List<LeaveApplication> getLeaveApplicationList();
     public List<LeaveApplication> findLeaveApplicationByUser(User user);
     public boolean checkIfOverlapLeave(LocalDate startDate, LocalDate endDate,User user, Long ID);
-    public boolean checkIfHalfDayOverlap(LocalDate Date, String halfdayIndicator, User user);
+    public boolean checkIfHalfDayOverlap(LocalDate Date, String halfdayIndicator, User user, Long ID);
     public Optional<LeaveApplication> findLeaveApplicationById(Long id);
+    public void UpdateCompensationLeaveApplication (LeaveApplication oldLeaveApplication, LeaveApplication newLeaveApplication);
+    public void DeleteLeaveApplication(LeaveApplication leaveApplication);
 
 }

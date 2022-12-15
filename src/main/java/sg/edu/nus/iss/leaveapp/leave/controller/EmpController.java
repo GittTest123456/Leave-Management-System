@@ -1,9 +1,6 @@
 package sg.edu.nus.iss.leaveapp.leave.controller;
 
-
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import sg.edu.nus.iss.leaveapp.leave.exception.ResourceNotFoundException;
 import sg.edu.nus.iss.leaveapp.leave.model.LeaveApplication;
-import sg.edu.nus.iss.leaveapp.leave.model.LeaveBalance;
 import sg.edu.nus.iss.leaveapp.leave.model.LeaveEventEnum;
 import sg.edu.nus.iss.leaveapp.leave.model.User;
 import sg.edu.nus.iss.leaveapp.leave.service.LeaveApplicationService;
@@ -70,7 +66,7 @@ public class EmpController {
                 return "leaveapplication";
 
         }
-        String errorMessage = generateErrorMessageAtValidation(userDetails,leaveApplication,null);
+        String errorMessage = generateErrorMessageAtValidation(userDetails,leaveApplication,null,"full");
         sessionObj.setAttribute("leaveApplication", leaveApplication);
         model.addAttribute("errorMessage",errorMessage);
         model.addAttribute("leaveApplication",leaveApplication);
@@ -78,15 +74,29 @@ public class EmpController {
 
     }
 
-    public String generateErrorMessageAtValidation(@AuthenticationPrincipal UserDetails userDetails,LeaveApplication leaveApplication, Long ID){
-        boolean startDatePublicHol = leaveApplicationService.checkIfWorkingDay(leaveApplication.getStartDate());
-        boolean endDatePublicHol = leaveApplicationService.checkIfWorkingDay(leaveApplication.getEndDate());
-        long daysBetween = leaveApplicationService.checkNumberOfDaysOfLeave(leaveApplication.getStartDate(), leaveApplication.getEndDate());
-        leaveApplication.setNumberOfDays((double)daysBetween);
+    public String generateErrorMessageAtValidation(@AuthenticationPrincipal UserDetails userDetails,LeaveApplication leaveApplication, Long ID, String mode){
+        boolean startDatePublicHol;
+        boolean endDatePublicHol;
         String staffID = userDetails.getUsername();
         User user = userService.getUserByUsername(staffID);
-        boolean leaveAppliedExceedBalance = leaveApplicationService.checkIfLeaveAppliedExceedBalance((double)daysBetween, leaveApplication.getLeaveType(),user);
-        boolean overlap = leaveApplicationService.checkIfOverlapLeave(leaveApplication.getStartDate(), leaveApplication.getEndDate(),user, ID);
+        boolean overlap;
+        long daysBetween;
+        boolean leaveAppliedExceedBalance;
+        if (mode.equals("full")){
+            overlap = leaveApplicationService.checkIfOverlapLeave(leaveApplication.getStartDate(), leaveApplication.getEndDate(),user, ID);
+            startDatePublicHol = leaveApplicationService.checkIfWorkingDay(leaveApplication.getStartDate());
+            endDatePublicHol = leaveApplicationService.checkIfWorkingDay(leaveApplication.getEndDate());
+            daysBetween = leaveApplicationService.checkNumberOfDaysOfLeave(leaveApplication.getStartDate(), leaveApplication.getEndDate());
+            leaveApplication.setNumberOfDays((double)daysBetween);
+            leaveAppliedExceedBalance = leaveApplicationService.checkIfLeaveAppliedExceedBalance((double)daysBetween, leaveApplication.getLeaveType(),user);
+        }
+        else{
+            leaveApplication.setNumberOfDays(0.5);
+            overlap = leaveApplicationService.checkIfHalfDayOverlap(leaveApplication.getStartDate(), leaveApplication.getHalfdayIndicator(),user, ID);
+            startDatePublicHol = leaveApplicationService.checkIfWorkingDay(leaveApplication.getStartDate());
+            endDatePublicHol =  startDatePublicHol;
+            leaveAppliedExceedBalance = leaveApplicationService.checkIfLeaveAppliedExceedBalance(0.5, leaveApplication.getLeaveType(),user);
+        }
         String errorMessage = leaveApplicationService.generateErrorMessage(startDatePublicHol, endDatePublicHol,leaveAppliedExceedBalance,overlap);
         return errorMessage;
     }
@@ -106,6 +116,28 @@ public class EmpController {
         sessionObj.removeAttribute("leaveApplication");
         return "leavesubmission";
 
+    }
+
+    @GetMapping("/deleteleave")
+    public String deleteleave(@RequestParam("id") String id, Model model){
+        Long ID = Long.parseLong(id);
+        Optional <LeaveApplication> leaveApplication = leaveApplicationService.findLeaveApplicationById(ID);
+        if (leaveApplication.isPresent()){
+            if(leaveApplication.get().getHalfdayIndicator() == null){
+                leaveApplicationService.DeleteLeaveApplication(leaveApplication.get());
+                model.addAttribute("leaveApplication", leaveApplication.get());
+                return "leavesubmission";
+            }
+            else{
+                leaveApplicationService.DeleteLeaveApplication(leaveApplication.get());
+                model.addAttribute("compensationLeaveApplication", leaveApplication.get());
+                return "compensationleavesubmission";
+            }
+        }
+        else{
+            throw new ResourceNotFoundException(
+                "Leave Details not found with this Leave Application ID " + id);
+        }
     }
 
     @GetMapping("/updateleave")
@@ -142,7 +174,7 @@ public class EmpController {
             if (bindingResult.hasErrors()){
                 return "leaveapplication";
             }
-            String errorMessage = generateErrorMessageAtValidation(userDetails,leaveApplication,ID);
+            String errorMessage = generateErrorMessageAtValidation(userDetails,leaveApplication,ID,"full");
             model.addAttribute("errorMessage",errorMessage);
             model.addAttribute("leaveApplication",leaveApplication);
             return "leavereview";
@@ -207,7 +239,6 @@ public class EmpController {
 	public String applyHalfDayCompensationLeave(@AuthenticationPrincipal UserDetails userDetails,Model model,HttpSession sessionObj) {
         LeaveApplication compensationLeaveApplication = (LeaveApplication) sessionObj.getAttribute("compensationLeaveApplication");
         if (compensationLeaveApplication == null){
-            //return "redirect:/emp";
             LeaveApplication compensationLeaveApp = new LeaveApplication();
             compensationLeaveApp.setLeaveType("compensation_leave");
             model.addAttribute("compensationLeaveApplication",compensationLeaveApp);
@@ -219,20 +250,14 @@ public class EmpController {
 		return "compensationleaveonly";
 	}
 
-      @PostMapping("/compensationleaveonly")
+    @PostMapping("/compensationleaveonly")
     public String validateCompensationLeaveApplication(@AuthenticationPrincipal UserDetails userDetails,@Valid @ModelAttribute("compensationLeaveApplication") LeaveApplication leaveApplication, BindingResult bindingResult, Model model
     ,HttpSession sessionObj){
         if (bindingResult.hasErrors()){
             return "compensationleaveonly";
         }
         leaveApplication.setEndDate(leaveApplication.getStartDate());
-        boolean DatePublicHol = leaveApplicationService.checkIfWorkingDay(leaveApplication.getStartDate());
-        leaveApplication.setNumberOfDays(0.5);
-        String staffID = userDetails.getUsername();
-        User user = userService.getUserByUsername(staffID);
-        boolean leaveAppliedExceedBalance = leaveApplicationService.checkIfLeaveAppliedExceedBalance(0.5, leaveApplication.getLeaveType(),user);
-        boolean overlap = leaveApplicationService.checkIfHalfDayOverlap(leaveApplication.getStartDate(),leaveApplication.getHalfdayIndicator(),user);
-        String errorMessage = leaveApplicationService.generateErrorMessage(DatePublicHol, DatePublicHol,leaveAppliedExceedBalance,overlap);
+        String errorMessage = generateErrorMessageAtValidation(userDetails,leaveApplication,null,"half");
         sessionObj.setAttribute("compensationLeaveApplication", leaveApplication);
         model.addAttribute("errorMessage",errorMessage);
         model.addAttribute("compensationLeaveApplication",leaveApplication);
@@ -241,7 +266,7 @@ public class EmpController {
     }
 
     @PostMapping("/updatecompensationleaveonly")
-    public String validateUpdatecompensationLeaveApplication(@AuthenticationPrincipal UserDetails userDetails,@Valid @ModelAttribute("leaveApplication") LeaveApplication leaveApplication, BindingResult bindingResult, Model model
+    public String validateUpdatecompensationLeaveApplication(@AuthenticationPrincipal UserDetails userDetails,@Valid @ModelAttribute("compensationLeaveApplication") LeaveApplication leaveApplication, BindingResult bindingResult, Model model
     ,@RequestParam("id") String id){
         if (id == null){
             throw new ResourceNotFoundException(
@@ -254,7 +279,7 @@ public class EmpController {
             if (bindingResult.hasErrors()){
                 return "compensationleaveonly";
             }
-            String errorMessage = generateErrorMessageAtValidation(userDetails,leaveApplication,ID);
+            String errorMessage = generateErrorMessageAtValidation(userDetails,leaveApplication,ID,"half");
             model.addAttribute("errorMessage",errorMessage);
             model.addAttribute("leaveApplication",leaveApplication);
             return "compensationleavereview";
@@ -275,7 +300,33 @@ public class EmpController {
         leaveApplicationService.saveLeaveApplication(leaveApplication);
         model.addAttribute("compensationleaveApplication",leaveApplication);
         sessionObj.removeAttribute("compensationLeaveApplication");
+        model.addAttribute("update","no");
         return "compensationleavesubmission";
+
+    }
+    @PostMapping("/updatecompensationleavesubmission")
+    public String submitUpdateCompensationLeaveApplication(@AuthenticationPrincipal UserDetails userDetails, @ModelAttribute("compensationLeaveApplication") LeaveApplication leaveApplication, Model model,
+    @RequestParam("id") String id){
+        Long ID = Long.parseLong(id);
+        String staffID = userDetails.getUsername();
+        User user = userService.getUserByUsername(staffID);
+        Optional <LeaveApplication> oldLeaveApplication = leaveApplicationService.findLeaveApplicationById(ID);
+        if (oldLeaveApplication.isPresent()){
+            leaveApplication.setUser(user);
+            leaveApplication.setDateOfApplication(LocalDate.now());
+            leaveApplication.setDateOfStatus(LocalDate.now());
+            leaveApplication.setStatus(LeaveEventEnum.PENDING);
+            leaveApplication.setLeaveType("compensation_leave");
+            leaveApplication.setEndDate(leaveApplication.getStartDate());
+            model.addAttribute("leaveApplication",leaveApplication);
+            model.addAttribute("update","yes");
+            leaveApplicationService.UpdateCompensationLeaveApplication(oldLeaveApplication.get(), leaveApplication);
+            return "compensationleavesubmission";
+        }
+        else{
+            throw new ResourceNotFoundException(
+                "Leave Details not found with this Leave Application ID " + id);
+        }
 
     }
         

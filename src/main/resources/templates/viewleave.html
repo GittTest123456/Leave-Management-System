@@ -14,9 +14,15 @@
 <body>
     <div class="container my-2 center">
         <h3>Personal Leave History</h3>
-        <br>The leave applications are sorted based on leave application ID. You may view the details of each leave application by clicking on the respective link. 
-        <br>For pending leave, you may update or delete.
-        <br>For approved leave, you may cancel.
+        The leave applications are sorted based on leave application ID. You may view the details of each leave application by clicking on the respective link. 
+        <br>For pending leave, you may update or delete. For approved leave, you may cancel.
+        <br>
+        <br><u>Legend of leave application status:</u>
+        <br> PENDING: After applying or updating intended leave and days deducted from leave balance first
+        <br> APPROVED: Intended leave actualised and you can go for your intended leave:)
+        <br> REJECTED: Leave days returned back and you cannot go for your intended leave:(
+        <br> CANCELLED: Leave days are returned and you are not going on your approved leave
+        <br>
         <h6><br>Staff ID </td><td><span sec:authentication="name">Username</span></h6>
             <p th:if="${leaveApplicationList == null}"> You have no leave records in the system thus far.</p>
         <table border="1" th:unless="${leaveApplicationList == null}">

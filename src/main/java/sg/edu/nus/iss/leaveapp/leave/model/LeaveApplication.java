@@ -53,6 +53,8 @@ public class LeaveApplication {
 	
 	private LocalDate dateOfStatus;
 
+    private String managerComment;
+
     public LeaveApplication(Long staffID, String leaveType, LocalDate startDate, LocalDate endDate, String reason, String dissemination, Long contactNumber){
         this.leaveType = leaveType;
         this.startDate = startDate;

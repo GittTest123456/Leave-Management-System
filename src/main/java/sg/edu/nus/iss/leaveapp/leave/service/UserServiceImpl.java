@@ -39,6 +39,10 @@ public class UserServiceImpl implements UserService{
     public User getUserByUsername(String username){
         return userRepo.getUserByUsername(username);
     }
+    @Override
+    public List<User> findSubordinateByManagerID(String managerID){
+        return userRepo.findByReportingStaffID(managerID);
+    }
 
 
     

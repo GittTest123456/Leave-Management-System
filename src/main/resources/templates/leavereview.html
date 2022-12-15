@@ -42,7 +42,7 @@
              <tr> <td>Work Dissemination (if any) </td>
             <td><input type="text" class="form-control" th:field="*{dissemination}" readonly></td> </tr>
                     <tr>
-                <td colspan="2" th:if="${errorMessage == ''}"><div><input type="submit" value="Submit Leave Application" class="btn btn-primary btn-sm mb-3"></div></td>
+                <td colspan="2" th:if="${errorMessage == ''}"><div><input type="submit" value="Submit New General Leave Application" class="btn btn-primary btn-sm mb-3"></div></td>
             </tr> 
             </form>
         </div>
@@ -71,7 +71,7 @@
              <tr> <td>Work Dissemination (if any) </td>
             <td><input type="text" class="form-control" th:field="*{dissemination}" readonly></td> </tr>
                      <tr>
-                <td colspan="2" th:if="${errorMessage == ''}"><div><input type="submit" value="Submit Update Leave Application" class="btn btn-primary btn-sm mb-3"></div></td>
+                <td colspan="2" th:if="${errorMessage == ''}"><div><input type="submit" value="Update existing General Leave Application" class="btn btn-primary btn-sm mb-3"></div></td>
             </tr>
             </form></div>
         </table>
@@ -80,7 +80,7 @@
         <a th:href="@{/emp/viewleavedetails(id=${leaveApplication.id})}" >RETURN TO LEAVE APPLICATION DETAILS</a></div>
         <div th:if="${leaveApplication.status == null}">
             <a th:href="@{/emp/leaveapplication}" >RETURN TO PREVIOUS PAGE</a></div>
-             <a th:href="@{/emp}">RETURN TO LEAVE OVERVIEW PAGE</a>
+             <a th:href="@{/emp}">RETURN TO PERSONAL LEAVE OVERVIEW PAGE</a>
              <br>
              <a th:href="@{/welcome}">RETURN TO HOME PAGE</a>
              <br>

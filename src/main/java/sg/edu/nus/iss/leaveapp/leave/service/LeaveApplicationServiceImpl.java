@@ -38,6 +38,18 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         return true;
 
     }
+    @Override
+    public void UpdateCompensationLeaveApplication(LeaveApplication oldLeaveApplication, LeaveApplication newLeaveApplication){
+        oldLeaveApplication.setContactNumber(newLeaveApplication.getContactNumber());
+        oldLeaveApplication.setDateOfApplication(newLeaveApplication.getDateOfApplication());
+        oldLeaveApplication.setDateOfStatus(newLeaveApplication.getDateOfStatus());
+        oldLeaveApplication.setDissemination(newLeaveApplication.getDissemination());
+        oldLeaveApplication.setStartDate(newLeaveApplication.getStartDate());
+        oldLeaveApplication.setEndDate(newLeaveApplication.getEndDate());
+        oldLeaveApplication.setHalfdayIndicator(newLeaveApplication.getHalfdayIndicator());
+        oldLeaveApplication.setReason(newLeaveApplication.getReason());
+        leaveApplicationRepo.save(oldLeaveApplication);
+    }
 
     @Override
     @Transactional
@@ -150,18 +162,21 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         return false;
     }
     @Override
-    public boolean checkIfHalfDayOverlap(LocalDate Date, String halfdayIndicator, User user){
+    public boolean checkIfHalfDayOverlap(LocalDate Date, String halfdayIndicator, User user, Long ID){
         List<LeaveApplication> userApplications = findLeaveApplicationByUser(user);
         List<LeaveApplication> userPendingAndApprFullDayApplications = new ArrayList<LeaveApplication>();
         List<LeaveApplication> userPendingAndApprHalfDayApplications = new ArrayList<LeaveApplication>();
         for (LeaveApplication leave: userApplications){
             if(leave.getStatus() == LeaveEventEnum.PENDING || leave.getStatus() == LeaveEventEnum.APPROVED ){
                 if(leave.getHalfdayIndicator()== null){
-                    //insert the id part
-                    userPendingAndApprFullDayApplications.add(leave);
+                    if(leave.getId() != ID){
+                        userPendingAndApprFullDayApplications.add(leave);
+                    }
                 }
                 else{
-                    userPendingAndApprHalfDayApplications.add(leave);
+                    if(leave.getId() != ID){
+                        userPendingAndApprHalfDayApplications.add(leave);
+                    }
                 }
             }
         }
@@ -186,6 +201,18 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     @Override
     public Optional<LeaveApplication> findLeaveApplicationById(Long id){
         return leaveApplicationRepo.findById(id);
+    }
+    @Override
+    @Transactional
+    public void DeleteLeaveApplication(LeaveApplication leaveApplication){
+        leaveBalanceService.increaseLeave(leaveApplication);
+        if (leaveApplication.getStatus() == LeaveEventEnum.PENDING){
+            leaveApplication.setStatus(LeaveEventEnum.DELETED);
+        }
+        if (leaveApplication.getStatus() == LeaveEventEnum.APPROVED){
+            leaveApplication.setStatus(LeaveEventEnum.CANCELLED);
+        }
+        leaveApplicationRepo.save(leaveApplication);
     }
 
 

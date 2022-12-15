@@ -43,13 +43,18 @@
                                         <td th:text="*{dateOfStatus}"> </td></tr>
                                         <tr><td>Date of Application</td>
                                             <td th:text="*{dateOfApplication}"> </td></tr>
-                                            <tr>
-                                                <td colspan="2" th:if="${leaveApplication.status.name() == 'PENDING'}"><a th:href="@{/emp/updateleave(id=${leaveApplication.id})}" class="btn btn-primary btn-sm mb-3">Update Leave Application</a></td>
+                                            <tr th:if="${leaveApplication.status.name() == 'PENDING'}">
+                                                <td colspan="2"><a th:href="@{/emp/updateleave(id=${leaveApplication.id})}" class="btn btn-primary btn-sm mb-3">Update Leave Application</a></td>
                                             </tr>
-                                            <tr>
-                                                <td colspan="2" th:if="${leaveApplication.status.name() == 'PENDING'}"><a th:href="@{/emp/deleteleave(id=${leaveApplication.id})}" class="btn btn-primary btn-sm mb-3">Delete Leave Application</a>
+                                            <tr th:if="${leaveApplication.status.name() == 'PENDING'}">
+                                                <td colspan="2" ><a th:href="@{/emp/deleteleave(id=${leaveApplication.id})}" class="btn btn-primary btn-sm mb-3">Delete Leave Application</a>
                                                 <br>Please note that once delete button is clicked,
                                                 <br> the leave application is deleted and this action is not reversible.</td>
+                                            </tr>
+                                            <tr th:if="${leaveApplication.status.name() == 'APPROVED'}">
+                                                <td colspan="2" ><a th:href="@{/emp/deleteleave(id=${leaveApplication.id})}" class="btn btn-primary btn-sm mb-3">Cancel Leave Application</a>
+                                                <br>Please note that once cancel button is clicked,
+                                                <br> the leave application is canceled and this action is not reversible.</td>
                                             </tr>
                                         </tr>
         </table>

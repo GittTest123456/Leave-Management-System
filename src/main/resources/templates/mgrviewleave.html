@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Application</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container my-2 center">
+        <h3 th:if="${view == 'leaveforapproval'}">Subordinates Leave Applications Pending for Approval</h3>
+        <h3 th:unless="${view == 'leaveforapproval'}">All Subordinates Leave Applications</h3>
+        The leave applications are sorted based on subordinates. You may view the details of each leave application by clicking on the respective link. 
+        <br><br><p th:if="${view == 'leaveforapproval'}">For these pending leave applications, you may accept or reject them</p> 
+        <h6>My Staff ID </td><td><span sec:authentication="name">Username</span></h6>
+            <p th:if="${view == 'leaveapproval'}">
+            <p th:if="${leaveApplicationList == null}"> You have no pending leave applications from subordinates for approval thus far.</p></p>
+        <table border="1" th:unless="${leaveApplicationList == null}">
+            <tr>
+                <td>Leave Application 
+                    <br> ID</td>
+                <td>Subordinate Staff ID</td>
+                <td>Subordinate Full Name</td>
+                <td>Date of Application<br>(yyyy-mm-dd)</td>
+                <td>Start Date <br> (yyyy-mm-dd)</td>
+                <td>End Date <br> (yyyy-mm-dd)</td>
+                <td>Time of the day <br> (if applicable)</td>
+                <td>Leave Type</td>
+                <td>Number Of <br>Days</td>
+                <td>Status</td>
+                <td>More Details</td>
+            </tr>
+            <tr th:each="leave: ${leaveApplicationList}">
+                <td th:text="${leave.id}"></td>
+                <td th:object="${leave.user}">
+                    <p th:text="*{username}"></p> 
+                </td>
+                <td th:object="${leave.user}">
+                    <p th:text="*{fullName}"></p> 
+                </td>
+                <td th:text="${leave.dateOfApplication}"></td>
+                <td th:text="${leave.startDate}"></td>
+                <td th:text="${leave.endDate}"></td>
+                <td th:text="${leave.halfdayIndicator}"></td>
+                <td th:text="${leave.leaveType}"></td>
+                <td th:text="${leave.numberOfDays}"></td>
+                <td th:text="${leave.Status}"></td>
+                <td><a th:href="@{/mgr/decideleaveoutcome(id=${leave.id})}" class="btn btn-primary btn-sm mb-3">Click here</a></td>
+            </tr>
+        </table>
+        <br><a th:href="@{/mgr}">RETURN TO MANAGER OVERVIEW PAGE</a>
+        <br>
+        <a th:href="@{/welcome}">RETURN TO HOME PAGE</a>
+        <br>
+                <a th:href="@{/logout}">LOGOUT</a>
+</div>
+
+        </body>
+        </html>

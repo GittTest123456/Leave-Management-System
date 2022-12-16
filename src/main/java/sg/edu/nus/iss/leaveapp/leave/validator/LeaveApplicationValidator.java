@@ -40,13 +40,7 @@ public class LeaveApplicationValidator implements Validator {
             errors.rejectValue("endDate", "error.dates", "End Date must be later than Today");
 
         }
-        if(leaveApplication.getStatus() != null){
-            if(leaveApplication.getStatus()== LeaveEventEnum.REJECTED && leaveApplication.getManagerComment().isEmpty()){
-                errors.rejectValue("managerComment","error.comments", "Comment have to be filled in when rejecting leave applications.");
-            }
-        }
         
     }
-
     
 }

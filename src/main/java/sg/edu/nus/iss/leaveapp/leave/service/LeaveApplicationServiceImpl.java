@@ -12,6 +12,9 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import sg.edu.nus.iss.leaveapp.leave.model.LeaveApplication;
 import sg.edu.nus.iss.leaveapp.leave.model.LeaveBalance;
 import sg.edu.nus.iss.leaveapp.leave.model.LeaveEventEnum;
@@ -38,6 +41,20 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         return true;
 
     }
+    @Override
+    public void approveLeaveApplication(LeaveApplication leaveApplication){
+        leaveApplicationRepo.save(leaveApplication);
+
+    }
+    @Override
+    @Transactional
+    public boolean rejectLeaveApplication(LeaveApplication leaveApplication){
+        leaveApplicationRepo.save(leaveApplication);
+        leaveBalanceService.increaseLeave(leaveApplication);
+
+        return true;
+    }
+    
     @Override
     public void UpdateCompensationLeaveApplication(LeaveApplication oldLeaveApplication, LeaveApplication newLeaveApplication){
         oldLeaveApplication.setContactNumber(newLeaveApplication.getContactNumber());
@@ -72,7 +89,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     }
 
     @Override
-    public boolean checkIfWorkingDay(LocalDate startDate){
+    public boolean checkIfWorkingDay(LocalDate startDate) throws JsonMappingException, JsonProcessingException{
         if ((startDate.getDayOfWeek() == DayOfWeek.SATURDAY)|| (startDate.getDayOfWeek() == DayOfWeek.SUNDAY)){
             return false;
         }
@@ -123,7 +140,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         return errorMessage;
     }
     @Override
-    public long checkNumberOfDaysOfLeave(LocalDate startDate, LocalDate endDate){
+    public long checkNumberOfDaysOfLeave(LocalDate startDate, LocalDate endDate) throws JsonMappingException, JsonProcessingException{
         long daysBetween = 1 + ChronoUnit.DAYS.between(startDate, endDate);
         if (daysBetween > 14){
             return daysBetween;
@@ -214,6 +231,23 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         }
         leaveApplicationRepo.save(leaveApplication);
     }
+
+    public List<LeaveApplication> findOverlappingSubordinateLeave(LeaveApplication leaveApplication, List<User> subordinateList){
+        List<LeaveApplication> colleaguesLeaveApplications = new ArrayList<LeaveApplication>();
+        List<LeaveApplication> colleaguesOverlappingLeaveApplications = new ArrayList<LeaveApplication>();
+        for (User subordinate: subordinateList){
+            if (!(leaveApplication.getUser().getUsername().equals(subordinate.getUsername()))){
+                colleaguesLeaveApplications.addAll(findLeaveApplicationByUser(subordinate));
+            }
+		}
+        for (LeaveApplication leave: colleaguesLeaveApplications){
+            if (!(leaveApplication.getEndDate().isBefore(leave.getStartDate()) ||leaveApplication.getStartDate().isAfter(leave.getEndDate()))) {
+				colleaguesOverlappingLeaveApplications.add(leave);
+			}
+        }
+        return colleaguesOverlappingLeaveApplications;
+    }
+
 
 
 }

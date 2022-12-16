@@ -51,6 +51,7 @@ public class HomeController {
         User user = userService.getUserByUsername(staffID);
 		String designation = user.getDesignation();
 		DefaultLeaveEntitlement defaultLeave = defaultLeaveEntitlementService.findBydesignation(designation);
+		model.addAttribute("fullName", user.getFullName());
 		model.addAttribute("medicalleave", defaultLeave.getMedicalLeave());
 		model.addAttribute("annualleave", defaultLeave.getAnnualLeave());
 		model.addAttribute("staffleave", user.getStaffleave());

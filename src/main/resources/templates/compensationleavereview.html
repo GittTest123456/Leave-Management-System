@@ -14,82 +14,134 @@
 <body>
     <div class="container my-2 center">
         <div th:if="${compensationLeaveApplication.status == null}">
-        <h3>HALF DAY Compensation Leave Application Form</h3>
-        Please note this form is only for application of HALF DAY Compensation Leave. 
-        <br>Please indicate the date (start date same as end date) and AM or PM for the HALF DAY Compensation Leave.
+            <h3>HALF DAY Compensation Leave Application Form</h3>
+            Please note this form is only for application of HALF DAY Compensation Leave.
+            <br>Please indicate the date (start date same as end date) and AM or PM for the HALF DAY Compensation Leave.
         </div>
         <div th:unless="${compensationLeaveApplication.status == null}">
             <h3>Update HALF DAY Compensation Leave Application Form</h3>
-            </div>
+        </div>
         <table>
-            <tr><td>Staff ID</td><td><span sec:authentication="name">Username</span></td></tr>
-            <div th:if="${compensationLeaveApplication.status== null}">
-            <form th:action="@{/emp/compensationleavesubmission}" th:object="${compensationLeaveApplication}" method="POST">
-                <tr>
-            <td>*Start and End Date (yyyy-mm-dd) </td>
-            <td><input type="date" class="form-control" min="2023-01-01" max="2023-12-31" th:field="*{startDate}" readonly>
-            </td>
-        </tr><br>
-        <tr>  <td> *Select Morning (AM) or Afternoon (PM)</td> <td>
-            <input type="text" class="form-control" th:field="*{halfdayIndicator}" readonly></td>
-        </tr>
-        <tr><td>Leave Type </td>
-            <td><input type="text" class="form-control" th:field="*{leaveType}" readonly> 
-            </tr>
-            <tr><td>Number of days of intended leave </td>
-                <td><input type="text" class="form-control" th:field="*{numberOfDays}"readonly> </td></tr>
-            <tr><td>*Reason for taking leave </td>
-            <td><input type="text" class="form-control" th:field="*{reason}" readonly> 
-            </td></tr>
-            <tr><td>Contact Number (if going overseas) </td>
-            <td><input type="number" class="form-control" th:field="*{contactNumber}"readonly></td></tr>
-             <tr> <td>Work Dissemination (if any) </td>
-            <td><input type="text" class="form-control" th:field="*{dissemination}"readonly></td> </tr>
-            <tr><td colspan="2"><br>Please note fields with * are mandatory details.</td></tr>
             <tr>
-                <td colspan="2" th:if="${errorMessage == ''}"><div><input type="submit" value="Submit new HALF DAY Compensation Leave Application" class="btn btn-primary btn-sm mb-3"></div></td>
+                <td>My Staff ID</td>
+                <td><span sec:authentication="name">Username</span></td>
             </tr>
-            </form>
-            </div>
-             <div th:unless="${compensationLeaveApplication.status== null}">
-                    <form th:action="@{/emp/updatecompensationleavesubmission(id=${compensationLeaveApplication.id})}" th:object="${compensationLeaveApplication}" method="POST">
-                        <tr><td>Leave Application ID</td> <td input type="text" th:text="*{id}" readonly></td></tr>
-                        <tr>
-                    <td>*Start and End Date (yyyy-mm-dd) </td>
-                    <td><input type="date" class="form-control" min="2023-01-01" max="2023-12-31" th:field="*{startDate}" readonly>
-                    </td>
-                </tr><br>
-                <tr>  <td> *Select Morning (AM) or Afternoon (PM)</td> <td>
-                    <input type="text" class="form-control" th:field="*{halfdayIndicator}" readonly></td>
-                </tr>
-                <tr><td>Leave Type </td>
-                    <td><input type="text" class="form-control" th:field="*{leaveType}" readonly> 
-                    </tr>
-                    <tr><td>Number of days of intended leave </td>
-                        <td><input type="text" class="form-control" th:field="*{numberOfDays}"readonly> </td></tr>
-                    <tr><td>*Reason for taking leave </td>
-                    <td><input type="text" class="form-control" th:field="*{reason}" readonly> </td></tr>
-                    <tr><td>Contact Number (if going overseas) </td>
-                    <td><input type="number" class="form-control" th:field="*{contactNumber}"readonly></td></tr>
-                     <tr> <td>Work Dissemination (if any) </td>
-                    <td><input type="text" class="form-control" th:field="*{dissemination}"readonly></td> </tr>
-                    <tr><td colspan="2"><br>Please note fields with * are mandatory details.</td></tr>
+            <div th:if="${compensationLeaveApplication.status== null}">
+                <form th:action="@{/emp/compensationleavesubmission}" th:object="${compensationLeaveApplication}"
+                    method="POST">
                     <tr>
-                        <td colspan="2" th:if="${errorMessage == ''}"><div><br><input type="submit" value="Update existing HALF DAY Compensation Leave Application" class="btn btn-primary btn-sm mb-3"></div></td>
+                        <td>*Start and End Date (yyyy-mm-dd) </td>
+                        <td><input type="date" class="form-control" min="2023-01-01" max="2023-12-31"
+                                th:field="*{startDate}" readonly>
+                        </td>
+                    </tr><br>
+                    <tr>
+                        <td> *Select Morning (AM) or Afternoon (PM)</td>
+                        <td>
+                            <input type="text" class="form-control" th:field="*{halfdayIndicator}" readonly>
+                        </td>
                     </tr>
-                    </form>
-                    </div>
+                    <tr>
+                        <td>Leave Type </td>
+                        <td><input type="text" class="form-control" th:field="*{leaveType}" readonly>
+                    </tr>
+                    <tr>
+                        <td>Number of days of intended leave </td>
+                        <td><input type="text" class="form-control" th:field="*{numberOfDays}" readonly> </td>
+                    </tr>
+                    <tr>
+                        <td>*Reason for taking leave </td>
+                        <td><input type="text" class="form-control" th:field="*{reason}" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Contact Number (if going overseas) </td>
+                        <td><input type="number" class="form-control" th:field="*{contactNumber}" readonly></td>
+                    </tr>
+                    <tr>
+                        <td>Work Dissemination (if any) </td>
+                        <td><input type="text" class="form-control" th:field="*{dissemination}" readonly></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><br>Please note fields with * are mandatory details.</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" th:if="${errorMessage == ''}">
+                            <div><input type="submit" value="Submit new HALF DAY Compensation Leave Application"
+                                    class="btn btn-primary btn-sm mb-3"></div>
+                        </td>
+                    </tr>
+                </form>
+            </div>
+            <div th:unless="${compensationLeaveApplication.status== null}">
+                <form th:action="@{/emp/updatecompensationleavesubmission(id=${compensationLeaveApplication.id})}"
+                    th:object="${compensationLeaveApplication}" method="POST">
+                    <tr>
+                        <td>Leave Application ID</td>
+                        <td input type="text" th:text="*{id}" readonly class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <td>*Start and End Date (yyyy-mm-dd) </td>
+                        <td><input type="date" class="form-control" min="2023-01-01" max="2023-12-31"
+                                th:field="*{startDate}" readonly>
+                        </td>
+                    </tr><br>
+                    <tr>
+                        <td> *Select Morning (AM) or Afternoon (PM)</td>
+                        <td>
+                            <input type="text" class="form-control" th:field="*{halfdayIndicator}" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Leave Type </td>
+                        <td><input type="text" class="form-control" th:field="*{leaveType}" readonly>
+                    </tr>
+                    <tr>
+                        <td>Number of days of intended leave </td>
+                        <td><input type="text" class="form-control" th:field="*{numberOfDays}" readonly> </td>
+                    </tr>
+                    <tr>
+                        <td>*Reason for taking leave </td>
+                        <td><input type="text" class="form-control" th:field="*{reason}" readonly> </td>
+                    </tr>
+                    <tr>
+                        <td>Contact Number (if going overseas) </td>
+                        <td><input type="number" class="form-control" th:field="*{contactNumber}" readonly></td>
+                    </tr>
+                    <tr>
+                        <td>Work Dissemination (if any) </td>
+                        <td><input type="text" class="form-control" th:field="*{dissemination}" readonly></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><br>Please note fields with * are mandatory details.</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" th:if="${errorMessage == ''}">
+                            <div><br><input type="submit"
+                                    value="Update existing HALF DAY Compensation Leave Application"
+                                    class="btn btn-primary btn-sm mb-3"></div>
+                        </td>
+                    </tr>
+                </form>
+            </div>
         </table>
         <div class="alert alert-warning" th:unless="${errorMessage == ''}" th:text="${errorMessage}"></div>
         <div th:unless="${compensationLeaveApplication.status == null}">
-            <a th:href="@{/emp/viewleavedetails(id=${compensationLeaveApplication.id})}" >RETURN TO LEAVE APPLICATION DETAILS</a></div>
-            <div th:if="${compensationLeaveApplication.status == null}">
-                <a th:href="@{/emp/compensationleaveonly}" >RETURN TO PREVIOUS PAGE</a></div>
+            <a th:href="@{/emp/viewleavedetails(id=${compensationLeaveApplication.id})}">RETURN TO LEAVE APPLICATION
+                DETAILS</a>
+        </div>
+        <div th:if="${compensationLeaveApplication.status == null}">
+            <a th:href="@{/emp/compensationleaveonly}">RETURN TO PREVIOUS PAGE</a>
+        </div>
         <a th:href="@{/emp}">RETURN TO PERSONAL LEAVE OVERVIEW PAGE</a>
         <br>
         <a th:href="@{/welcome}">RETURN TO HOME PAGE</a>
         <br>
-                <a th:href="@{/logout}">LOGOUT</a>
+        <a th:href="@{/logout}">LOGOUT</a>
 </body>
+<br>
+<br>
+Now is: <b th:text="${execInfo.now.time}"></b></small> <br /> <small>(c) Leave Management System, NUS ISS</small>
+</div>
 
 </html>

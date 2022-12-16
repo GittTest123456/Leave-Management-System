@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import sg.edu.nus.iss.leaveapp.leave.exception.ResourceNotFoundException;
 import sg.edu.nus.iss.leaveapp.leave.model.LeaveApplication;
 import sg.edu.nus.iss.leaveapp.leave.model.LeaveEventEnum;
@@ -61,7 +64,7 @@ public class EmpController {
 
     @PostMapping("/leaveapplication")
     public String validateLeaveApplication(@AuthenticationPrincipal UserDetails userDetails,@Valid @ModelAttribute("leaveApplication") LeaveApplication leaveApplication, BindingResult bindingResult, Model model
-    ,HttpSession sessionObj){
+    ,HttpSession sessionObj) throws JsonMappingException, JsonProcessingException{
         if (bindingResult.hasErrors()){
                 return "leaveapplication";
 
@@ -74,7 +77,7 @@ public class EmpController {
 
     }
 
-    public String generateErrorMessageAtValidation(@AuthenticationPrincipal UserDetails userDetails,LeaveApplication leaveApplication, Long ID, String mode){
+    public String generateErrorMessageAtValidation(@AuthenticationPrincipal UserDetails userDetails,LeaveApplication leaveApplication, Long ID, String mode) throws JsonMappingException, JsonProcessingException{
         boolean startDatePublicHol;
         boolean endDatePublicHol;
         String staffID = userDetails.getUsername();
@@ -162,7 +165,7 @@ public class EmpController {
 
     @PostMapping("/updateleaveapplication")
     public String validateUpdateLeaveApplication(@AuthenticationPrincipal UserDetails userDetails,@Valid @ModelAttribute("leaveApplication") LeaveApplication leaveApplication, BindingResult bindingResult, Model model
-    ,@RequestParam("id") String id){
+    ,@RequestParam("id") String id) throws JsonMappingException, JsonProcessingException{
         if (id == null){
             throw new ResourceNotFoundException(
                 "Leave Details not found with this Leave Application ID " + id);
@@ -252,7 +255,7 @@ public class EmpController {
 
     @PostMapping("/compensationleaveonly")
     public String validateCompensationLeaveApplication(@AuthenticationPrincipal UserDetails userDetails,@Valid @ModelAttribute("compensationLeaveApplication") LeaveApplication leaveApplication, BindingResult bindingResult, Model model
-    ,HttpSession sessionObj){
+    ,HttpSession sessionObj) throws JsonMappingException, JsonProcessingException{
         if (bindingResult.hasErrors()){
             return "compensationleaveonly";
         }
@@ -267,7 +270,7 @@ public class EmpController {
 
     @PostMapping("/updatecompensationleaveonly")
     public String validateUpdatecompensationLeaveApplication(@AuthenticationPrincipal UserDetails userDetails,@Valid @ModelAttribute("compensationLeaveApplication") LeaveApplication leaveApplication, BindingResult bindingResult, Model model
-    ,@RequestParam("id") String id){
+    ,@RequestParam("id") String id) throws JsonMappingException, JsonProcessingException{
         if (id == null){
             throw new ResourceNotFoundException(
                 "Leave Details not found with this Leave Application ID " + id);

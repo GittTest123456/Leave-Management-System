@@ -28,6 +28,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 // import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.web.client.RestTemplate;
 
 import sg.edu.nus.iss.leaveapp.leave.model.DefaultLeaveEntitlement;
 import sg.edu.nus.iss.leaveapp.leave.model.LeaveApplication;
@@ -53,6 +54,11 @@ public class LeaveWebApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(LeaveWebApplication.class, args);
+	}
+
+	@Bean
+	public RestTemplate getRestTemplate(){
+		return new RestTemplate();
 	}
 
 	@Bean
@@ -112,40 +118,40 @@ public class LeaveWebApplication {
 			//leaveTypeService.saveLeaveType(medicalLeave);
 			//leaveTypeService.saveLeaveType(compensationLeave);
 
-			DateTimeFormatter df1 = DateTimeFormatter.ofPattern("dd/MM/yy");
-			Map<String, String> dateofPublicHol = new HashMap<>(){{
-				put("01/01/23", "New Year’s Day");
-				put("02/01/23", "New Year’s Day In Lieu");
-				put("22/01/23", "Chinese New Year");
-				put("23/01/23", "Chinese New Year");
-				put("24/01/23", "Chinese New Year In Lieu");
-				put("07/04/23", "Good Friday");
-				put("22/04/23", "Hari Raya Puasa");
-				put("01/05/23", "Labour Day");
-				put("03/06/23", "Vesak Day");
-				put("29/06/23", "Hari Raya Haji");
-				put("09/08/23", "National Day");
-				put("12/11/23", "Deepavali");
-				put("13/11/23", "Deepavali In Lieu");
-				put("25/12/23", "Christmas");
+			//DateTimeFormatter df1 = DateTimeFormatter.ofPattern("dd/MM/yy");
+			//Map<String, String> dateofPublicHol = new HashMap<>(){{
+				//put("01/01/23", "New Year’s Day");
+				//put("02/01/23", "New Year’s Day In Lieu");
+				//put("22/01/23", "Chinese New Year");
+				//put("23/01/23", "Chinese New Year");
+				//put("24/01/23", "Chinese New Year In Lieu");
+				//put("07/04/23", "Good Friday");
+				//put("22/04/23", "Hari Raya Puasa");
+				//put("01/05/23", "Labour Day");
+				//put("03/06/23", "Vesak Day");
+				//put("29/06/23", "Hari Raya Haji");
+				//put("09/08/23", "National Day");
+				//put("12/11/23", "Deepavali");
+				//put("13/11/23", "Deepavali In Lieu");
+				//put("25/12/23", "Christmas");
 
 
-			}};
-			List<PublicHoliday> listOfPublicHol = new ArrayList<PublicHoliday>();
-			for (String date: dateofPublicHol.keySet()){
-				LocalDate localDate = LocalDate.parse(date,df1);
-				String description = dateofPublicHol.get(date);
-				listOfPublicHol.add(new PublicHoliday(localDate, description));
-			}
-			for (PublicHoliday publichol: listOfPublicHol ){
-				publicHolService.savePublicHoliday(publichol);
-			}
+			//}};
+			//List<PublicHoliday> listOfPublicHol = new ArrayList<PublicHoliday>();
+			//for (String date: dateofPublicHol.keySet()){
+				//LocalDate localDate = LocalDate.parse(date,df1);
+				//String description = dateofPublicHol.get(date);
+				//listOfPublicHol.add(new PublicHoliday(localDate, description));
+			//}
+			//for (PublicHoliday publichol: listOfPublicHol ){
+				//publicHolService.savePublicHoliday(publichol);
+			//}
 			LeaveApplication leaveApplication = new LeaveApplication((long)2811, "annual_leave", LocalDate.now(), LocalDate.now(), "rest", "great", (long)90000000);
 			leaveApplication.setNumberOfDays(0.5);
 			leaveApplication.setHalfdayIndicator("AM");
 			leaveApplication.setDateOfApplication(LocalDate.now());
 			leaveApplication.setDateOfStatus(LocalDate.now());
-			leaveApplication.setStatus(LeaveEventEnum.APPROVED);
+			leaveApplication.setStatus(LeaveEventEnum.PENDING);
 			leaveApplication.setUser(jerry);
 			leaveAppService.saveLeaveApplication(leaveApplication);
 			LeaveApplication leaveApplication2 = new LeaveApplication((long)2811, "compensation_leave", LocalDate.now(), LocalDate.now(), "rest", "great", (long)90000000);
@@ -153,7 +159,7 @@ public class LeaveWebApplication {
 			leaveApplication2.setHalfdayIndicator("AM");
 			leaveApplication2.setDateOfApplication(LocalDate.now());
 			leaveApplication2.setDateOfStatus(LocalDate.now());
-			leaveApplication2.setStatus(LeaveEventEnum.APPROVED);
+			leaveApplication2.setStatus(LeaveEventEnum.PENDING);
 			leaveApplication2.setUser(tom);
 			leaveAppService.saveLeaveApplication(leaveApplication2);
 			//LeaveApplication leaveApplication2 = new LeaveApplication((long)2811, "compensation_leave", LocalDate.now(), LocalDate.now(), "rest", "great", (long)90000000);

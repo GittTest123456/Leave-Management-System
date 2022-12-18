@@ -1,5 +1,8 @@
 package sg.edu.nus.iss.leaveapp.leave.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,13 +16,18 @@ public class DefaultLeaveEntitlementServiceImpl implements DefaultLeaveEntitleme
     private DefaultLeaveEntitlementRepository defaultLeaveEntitlementRepository;
 
     @Override
-    public  DefaultLeaveEntitlement findBydesignation(String designation){
-        return defaultLeaveEntitlementRepository.findBydesignation(designation);
+    public  Optional<DefaultLeaveEntitlement> findByJobGrade(String jobGrade){
+        return defaultLeaveEntitlementRepository.findById(jobGrade);
     }
 
     @Override
     public DefaultLeaveEntitlement saveDefaultLeaveEntitlement(DefaultLeaveEntitlement leaveEntitlement){
         return defaultLeaveEntitlementRepository.save(leaveEntitlement);
+    }
+
+    @Override
+    public List<DefaultLeaveEntitlement> getAll(){
+        return defaultLeaveEntitlementRepository.findAll();
     }
     
 }

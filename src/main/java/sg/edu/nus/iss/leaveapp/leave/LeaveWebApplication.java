@@ -71,45 +71,49 @@ public class LeaveWebApplication {
 			Role manager = roleService.saveRole(new Role("Manager"));
 
 			System.out.println("---- Create some users");
-			User john = new User("2531", "John123", "John Tan Meng Keng", "92887201", "John@gmail.com", "Administrator", null);
-			User tom = new User("1835", "Tom123", "Tom Lee Shin", "92887888", "Tom@gmail.com","Employee", "2811");
-			User sally = new User("2811", "Sally123", "Sally Ang Jean Tee", "92888000", "Sally@gmail.com", "Manager",null);
-			User jerry = new User("5833", "Jerry123", "Jerry Heng An Tan", "92895888", "Jerry@gmail.com", "Employee","2811");
+			User john = new User("2531", "John123@", "John Tan Meng Keng", "92887201", "John@gmail.com", "Overall Head of ISS", "None", "ISS03");
+			User sally = new User("2811", "Sally123@", "Sally Ang Jean Tee", "92888000", "Sally@gmail.com", "Professor","2531", "ISS02");
+			User tom = new User("1835", "Tom123@@", "Tom Lee Shin", "92887888", "Tom@gmail.com","Lecturer", "2811", "ISS01");
+			User jerry = new User("5833", "Jerry123@", "Jerry Heng An Tan", "92895888", "Jerry@gmail.com", "Lecturer","2811", "ISS01");
 
-			john.setRoles(Arrays.asList(admin));
-			tom.setRoles(Arrays.asList(employee));
-			sally.setRoles(Arrays.asList(manager, employee));
-			jerry.setRoles(Arrays.asList(employee));
-
-			DefaultLeaveEntitlement manage = new DefaultLeaveEntitlement("Manager");
-			DefaultLeaveEntitlement employ = new DefaultLeaveEntitlement("Employee");
-			DefaultLeaveEntitlement admins = new DefaultLeaveEntitlement("Administrator");
+			DefaultLeaveEntitlement admins = new DefaultLeaveEntitlement("ISS03");
+			DefaultLeaveEntitlement manage = new DefaultLeaveEntitlement("ISS02");
+			DefaultLeaveEntitlement employ = new DefaultLeaveEntitlement("ISS01");
+			defaultLeaveEntitlementService.saveDefaultLeaveEntitlement(admins);
 			defaultLeaveEntitlementService.saveDefaultLeaveEntitlement(manage);
 			defaultLeaveEntitlementService.saveDefaultLeaveEntitlement(employ);
-			defaultLeaveEntitlementService.saveDefaultLeaveEntitlement(admins);
 
-			john.setDefaultLeaveEntitlement(admins);
-			tom.setDefaultLeaveEntitlement(employ);
-			sally.setDefaultLeaveEntitlement(manage);
-			jerry.setDefaultLeaveEntitlement(employ);
+			//saving the users will help to set the roles.
+			//john.setRoles(Arrays.asList(admin, employee, manager));
+			//tom.setRoles(Arrays.asList(employee));
+			//sally.setRoles(Arrays.asList(manager, employee));
+			//jerry.setRoles(Arrays.asList(employee));
+
+			//saving the users will help set the leave entitlement as well.
+			//john.setDefaultLeaveEntitlement(admins);
+			//tom.setDefaultLeaveEntitlement(employ);
+			//sally.setDefaultLeaveEntitlement(manage);
+			//jerry.setDefaultLeaveEntitlement(employ);
 
 			userService.saveUser(john);
-			userService.saveUser(tom);
 			userService.saveUser(sally);
+			userService.saveUser(tom);
 			userService.saveUser(jerry);
 //since leave entitlement contains the foreign key staff_ID, it can only be set when staff is saved in the database/repository with staff ID.
-			LeaveBalance johnBalanceLeave = new LeaveBalance(john);
-			LeaveBalance tomBalanceLeave = new LeaveBalance(tom);
-			LeaveBalance sallyBalanceLeave = new LeaveBalance(sally);
-			LeaveBalance jerryBalanceLeave = new LeaveBalance(jerry);
-			sallyBalanceLeave.setCompensationLeave(2.5);
-			jerryBalanceLeave.setCompensationLeave(2.5);
-			tomBalanceLeave.setCompensationLeave(2.5);
+			//saving the users will help set the leave balance as well.
+			//LeaveBalance johnBalanceLeave = new LeaveBalance(john);
+			//LeaveBalance tomBalanceLeave = new LeaveBalance(tom);
+			//LeaveBalance sallyBalanceLeave = new LeaveBalance(sally);
+			//LeaveBalance jerryBalanceLeave = new LeaveBalance(jerry);
+			//leaveBalanceService.saveLeaveBalance(johnBalanceLeave);
+			//leaveBalanceService.saveLeaveBalance(tomBalanceLeave);
+			//leaveBalanceService.saveLeaveBalance(sallyBalanceLeave);
+			//leaveBalanceService.saveLeaveBalance(jerryBalanceLeave);
 
-			leaveBalanceService.saveLeaveBalance(johnBalanceLeave);
-			leaveBalanceService.saveLeaveBalance(tomBalanceLeave);
-			leaveBalanceService.saveLeaveBalance(sallyBalanceLeave);
-			leaveBalanceService.saveLeaveBalance(jerryBalanceLeave);
+			//johnBalanceLeave.setCompensationLeave(null);
+			//sallyBalanceLeave.setCompensationLeave(2.5);
+			//jerryBalanceLeave.setCompensationLeave(2.5);
+			//tomBalanceLeave.setCompensationLeave(2.5);
 
 			//LeaveType annualLeave = new LeaveType("annual_leave","1");
 			//LeaveType medicalLeave = new LeaveType("medical_leave","1");
@@ -154,7 +158,7 @@ public class LeaveWebApplication {
 			leaveApplication.setStatus(LeaveEventEnum.PENDING);
 			leaveApplication.setUser(jerry);
 			leaveAppService.saveLeaveApplication(leaveApplication);
-			LeaveApplication leaveApplication2 = new LeaveApplication((long)2811, "compensation_leave", LocalDate.now(), LocalDate.now(), "rest", "great", (long)90000000);
+			LeaveApplication leaveApplication2 = new LeaveApplication((long)2811, "annual_leave", LocalDate.now(), LocalDate.now(), "rest", "great", (long)90000000);
 			leaveApplication2.setNumberOfDays(0.5);
 			leaveApplication2.setHalfdayIndicator("AM");
 			leaveApplication2.setDateOfApplication(LocalDate.now());

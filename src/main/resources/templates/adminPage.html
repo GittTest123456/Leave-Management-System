@@ -12,25 +12,37 @@
 
 <body>
     <div class="container my-2 center">
+        <h6>My Staff ID </td>
+            <td><span sec:authentication="name">Username</span>
+        </h6>            <h6>My Full Name </td>
+            <td><span th:text=${fullName}></span>
+        </h6>
     <h5> Available Administrative Services</h5>
     <div>
-        <a th:href="@{/adm/managestaff}" class="btn btn-primary btn-sm mb-3">Manage Staff</a>
+        <a th:href="@{/adm/managestaff}" class="btn btn-primary btn-sm mb-3">Manage Staff Records</a>
     </div>
     <div>
-        <a th:href="@{/adm/manageleavetypes}" class="btn btn-primary btn-sm mb-3">ManageLeave Types</a>
+        <a th:href="@{/adm/manageaccess}" class="btn btn-primary btn-sm mb-3">Manage Staff Account Access Rights</a>
     </div>
     <div>
-        <a th:href="@{/adm/managecalendar}" class="btn btn-primary btn-sm mb-3">Maintain Calendar of Public Holidays</a>
+        <a th:href="@{/adm/managehierarchy}" class="btn btn-primary btn-sm mb-3">Manage Staff Approval Hierarchy </a>
     </div>
     <div>
         <a th:href="@{/adm/managestaffleave}" class="btn btn-primary btn-sm mb-3">Manage Staff Annnual Leave Entitlement </a>
     </div>
     <div>
-        <a th:href="@{/adm/managehierarchy}" class="btn btn-primary btn-sm mb-3">Manage Approval Hierarchy </a>
+        <a th:href="@{/adm/manageleavetypes}" class="btn btn-primary btn-sm mb-3">Manage Leave Types</a>
+    </div>
+    <div>
+        <a th:href="@{/adm/managecalendar}" class="btn btn-primary btn-sm mb-3">Maintain Calendar of Public Holidays</a>
     </div>
     <a th:href="@{/welcome}">RETURN TO HOME PAGE</a>
     <br>
     <a th:href="@{/logout}">LOGOUT</a>
 </body>
+<br>
+<br>
+Now is: <b th:text="${execInfo.now.time}"></b></small> <br /> <small>(c) Leave Management System, NUS ISS</small>
+</div>
 
 </html>

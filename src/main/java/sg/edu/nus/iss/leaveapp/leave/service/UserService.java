@@ -7,16 +7,20 @@ import sg.edu.nus.iss.leaveapp.leave.model.User;
 
 public interface UserService {
 
-    User saveUser(User user);
+    Boolean saveUser(User user);
     
     List<User> getUserList();
 
-    User updateUser (User user, String username);
+    Boolean updateUser(User user) ;
 
-    Boolean deleteUserByUsername(String username);
+    Boolean deleteUser(User user);
 
     User getUserByUsername(String username);
 
     List<User> findSubordinateByManagerID(String managerID);
+
+    Boolean updateHierarchy(User staff);
+
+    Boolean updateAccess(User staff);
     
 }

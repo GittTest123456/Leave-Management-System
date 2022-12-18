@@ -12,14 +12,13 @@
 
 <body>
     <div class="container my-2 center">
-        <br>
-        <h3 th:if="${action} == 'edit'"> Edit a Public Holiday </h3>
-        <h3 th:if="${action} == 'add'"> Add a Public Holiday </h3>
         <h6>My Staff ID </td>
             <td><span sec:authentication="name">Username</span>
         </h6>            <h6>My Full Name </td>
             <td><span th:text=${fullName}></span>
         </h6>
+        <h3 th:if="${action} == 'edit'"> Edit a Public Holiday (Name only) </h3>
+        <h3 th:if="${action} == 'add'"> Add a Public Holiday </h3>
             <table>
                 <form th:if="${action} == 'edit'" th:object="${publicHol}" th:action="@{/adm/updatepublichol}" method="POST">
                 <tr><td><label for="id"></label></td>
@@ -29,7 +28,7 @@
             <td><input type="date" th:field="*{dateOfPublicHol}" readonly>
                 <span class="alert alert-warning" th:if="${#fields.hasErrors('dateOfPublicHol')}"
                 th:errors="*{dateOfPublicHol}"></td><span></tr>
-            <tr><td><label for="nameOfPublicHol">Name of Public Holiday</label></td>
+            <tr><td><label for="nameOfPublicHol"><b>Name of Public Holiday</b></label></td>
                 <td><input type="text" th:field="*{nameOfPublicHol}" /> 
                     <span class="alert alert-warning" th:if="${#fields.hasErrors('nameOfPublicHol')}"
                     th:errors="*{nameOfPublicHol}"></td><span>

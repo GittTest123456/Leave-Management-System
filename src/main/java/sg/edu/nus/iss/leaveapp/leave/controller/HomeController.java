@@ -40,7 +40,10 @@ public class HomeController {
 	}
     
 	@GetMapping("/admin")
-	public String getAdminPage() {
+	public String getAdminPage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+		String staffID = userDetails.getUsername();
+        User user = userService.getUserByUsername(staffID);
+		model.addAttribute("fullName", user.getFullName());
 		return "adminPage";
 	}
 	
@@ -49,8 +52,8 @@ public class HomeController {
 	Model model) {
 		String staffID = userDetails.getUsername();
         User user = userService.getUserByUsername(staffID);
-		String designation = user.getDesignation();
-		DefaultLeaveEntitlement defaultLeave = defaultLeaveEntitlementService.findBydesignation(designation);
+		String jobGrade = user.getJobGrade();
+		DefaultLeaveEntitlement defaultLeave = defaultLeaveEntitlementService.findByJobGrade(jobGrade).get();
 		model.addAttribute("fullName", user.getFullName());
 		model.addAttribute("medicalleave", defaultLeave.getMedicalLeave());
 		model.addAttribute("annualleave", defaultLeave.getAnnualLeave());
@@ -59,7 +62,11 @@ public class HomeController {
 	}
 
 	@GetMapping("/mgr")
-	public String getManagerPage() {
+	public String getManagerPage(@AuthenticationPrincipal UserDetails userDetails,
+	Model model) {
+		String staffID = userDetails.getUsername();
+        User user = userService.getUserByUsername(staffID);
+		model.addAttribute("fullName", user.getFullName());
 		return "mgrPage";
 	}
 	

@@ -219,13 +219,17 @@ public class EmpController {
         else{
             model.addAttribute("leaveApplicationList", leaveApplicationList);
         }
+        model.addAttribute("fullName", user.getFullName());
 		return "viewleave";
 	}
 
     @GetMapping("/viewleavedetails")
-    public String viewleavedetails(@RequestParam("id") String id, Model model){
+    public String viewleavedetails(@AuthenticationPrincipal UserDetails userDetails,@RequestParam("id") String id, Model model){
         Long ID = Long.parseLong(id);
+        String staffID = userDetails.getUsername();
+        User user = userService.getUserByUsername(staffID);
         Optional <LeaveApplication> leaveApplication = leaveApplicationService.findLeaveApplicationById(ID);
+        model.addAttribute("fullName", user.getFullName());
         if (leaveApplication.isPresent()){
             model.addAttribute("leaveApplication", leaveApplication.get());
         }

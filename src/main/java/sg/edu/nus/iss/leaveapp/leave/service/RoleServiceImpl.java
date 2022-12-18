@@ -1,10 +1,13 @@
 package sg.edu.nus.iss.leaveapp.leave.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import sg.edu.nus.iss.leaveapp.leave.model.Role;
 import sg.edu.nus.iss.leaveapp.leave.repository.RoleRepository;
+import sg.edu.nus.iss.leaveapp.leave.model.User;
 
 @Service
 public class RoleServiceImpl implements RoleService{
@@ -16,5 +19,11 @@ public class RoleServiceImpl implements RoleService{
     public Role saveRole(Role role){
         return roleRepo.save(role);
     }
+
+    @Override
+    public List<Role> findRoleByRoleName(String roleName){
+        return roleRepo.findByRoleName(roleName);
+    }
+
     
 }

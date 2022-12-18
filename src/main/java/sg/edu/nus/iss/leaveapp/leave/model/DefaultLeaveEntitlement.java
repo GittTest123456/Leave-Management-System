@@ -21,25 +21,20 @@ import lombok.NoArgsConstructor;
 @Table
 public class DefaultLeaveEntitlement {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String designation;
+    private String jobGrade;
 
     private Double annualLeave;
     private Double medicalLeave;
-    private Double compensationLeave;
 
-    public DefaultLeaveEntitlement (String designation){
-        this.designation = designation;
-        if (designation.equals("Manager")){
+    public DefaultLeaveEntitlement (String jobGrade){
+        this.jobGrade = jobGrade;
+        if (jobGrade.equals("ISS02")){
             this.annualLeave = 18.0;
             this.medicalLeave = 60.0;
-            this.compensationLeave = 0.0;
         }
-        if (designation.equals("Employee")){
+        if (jobGrade.equals("ISS01")){
             this.annualLeave = 14.0;
             this.medicalLeave = 60.0;
-            this.compensationLeave = 0.0;
         }
     }
 

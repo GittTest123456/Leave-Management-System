@@ -12,10 +12,12 @@
 
 <body>
     <div class="container my-2 center">
-        <h3> Manager Page </h3>
         <h6>My Staff ID </td>
             <td><span sec:authentication="name">Username</span>
+        </h6>            <h6>My Full Name </td>
+            <td><span th:text=${fullName}></span>
         </h6>
+        <h3> Manager Page </h3>
         <br>
         <div>
             <a th:href="@{/mgr/mgrviewleaveforapproval}" class="btn btn-primary btn-sm mb-3">View Leave Application for

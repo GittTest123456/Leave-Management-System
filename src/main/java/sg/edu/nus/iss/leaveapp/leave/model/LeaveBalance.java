@@ -1,6 +1,7 @@
 package sg.edu.nus.iss.leaveapp.leave.model;
 
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,13 +30,13 @@ public class LeaveBalance {
         DefaultLeaveEntitlement defaultLeaveEntitlement = user.getDefaultLeaveEntitlement();
         this.annualLeave = defaultLeaveEntitlement.getAnnualLeave();
         this.medicalLeave = defaultLeaveEntitlement.getMedicalLeave();
-        this.compensationLeave = defaultLeaveEntitlement.getCompensationLeave();
+        this.compensationLeave = 0.0;
         this.overtimeHours = (long) (0);
         this.user = user;
 
     }
 
-    @OneToOne
+    @OneToOne (cascade=CascadeType.REMOVE, orphanRemoval=true)
     private User user;
 
 }

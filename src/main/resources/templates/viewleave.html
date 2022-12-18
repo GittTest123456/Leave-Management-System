@@ -13,6 +13,11 @@
 
 <body>
     <div class="container my-2 center">
+        <h6>My Staff ID </td>
+            <td><span sec:authentication="name">Username</span>
+        </h6>            <h6>My Full Name </td>
+            <td><span th:text=${fullName}></span>
+        </h6>
         <h3>Personal Leave History</h3>
         The leave applications are sorted based on leave application ID. You may view the details of each leave
         application by clicking on the respective link.
@@ -24,10 +29,8 @@
         <br> REJECTED: Leave days returned back and you cannot go for your intended leave:(
         <br> CANCELLED: Leave days are returned and you are not going on your approved leave
         <br>
-        <h6><br>My Staff ID </td>
-            <td><span sec:authentication="name">Username</span>
-        </h6>
-        <p th:if="${leaveApplicationList == null}"> You have no leave records in the system thus far.</p>
+        <p th:if="${leaveApplicationList == null}"><br><b> You have no leave records in the system thus far.</b></p>
+        <br>
         <table border="1" th:unless="${leaveApplicationList == null}">
             <tr>
                 <td>Leave Application

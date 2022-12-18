@@ -16,6 +16,17 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService {
     private LeaveBalanceRepository leaveBalanceRepo;
 
     @Override
+    public boolean deleteLeaveBalance(LeaveBalance leaveBalance){
+        leaveBalanceRepo.delete(leaveBalance);
+        return true;
+    }
+
+    @Override
+    public LeaveBalance getLeaveBalanceByUser(User user){
+        return leaveBalanceRepo.findByUser(user);
+    }
+
+    @Override
     public LeaveBalance saveLeaveBalance(LeaveBalance leaveBalance){
         return leaveBalanceRepo.save(leaveBalance);
 

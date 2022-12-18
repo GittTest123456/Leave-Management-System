@@ -3,6 +3,7 @@ package sg.edu.nus.iss.leaveapp.leave.model;
 import java.time.LocalDate;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -64,8 +65,9 @@ public class LeaveApplication {
         this.contactNumber = contactNumber;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.REMOVE)
     private User user;
+    //remove leaveapplication and leave balance when user is deleted.
 
 
 

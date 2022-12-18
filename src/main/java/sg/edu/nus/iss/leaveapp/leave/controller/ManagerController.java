@@ -37,7 +37,10 @@ public class ManagerController {
 	
 	@GetMapping("/mgrviewleave")
 	public String getAllSubordinateLeavePage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+		String ManagerID = userDetails.getUsername();
+		User user = userService.getUserByUsername(ManagerID);
 		List<LeaveApplication> allSubordinateLeaveApplication = getAllSubordinateLeave(userDetails);
+		model.addAttribute("fullName", user.getFullName());
 		if (allSubordinateLeaveApplication.isEmpty()){
 			model.addAttribute("leaveApplicationList", null);
 		}
@@ -50,6 +53,9 @@ public class ManagerController {
 
 	@GetMapping("/mgrviewleaveforapproval")
 	public String getAllSubordinateLeaveforApprovalPage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+		String ManagerID = userDetails.getUsername();
+		User user = userService.getUserByUsername(ManagerID);
+		model.addAttribute("fullName", user.getFullName());
 		List<LeaveApplication> allSubordinateLeaveApplication = getAllSubordinateLeave(userDetails);
 		List<LeaveApplication> allSubordinatePendingLeaveApplication = new ArrayList<LeaveApplication>();
 		for (LeaveApplication leaveApplication: allSubordinateLeaveApplication){
@@ -81,6 +87,8 @@ public class ManagerController {
     public String decideleaveoutcome(@AuthenticationPrincipal UserDetails userDetails,@RequestParam("id") String id, Model model){
         Long ID = Long.parseLong(id);
 		String ManagerID = userDetails.getUsername();
+		User user = userService.getUserByUsername(ManagerID);
+		model.addAttribute("fullName", user.getFullName());
 		List<User> subordinateList = userService.findSubordinateByManagerID(ManagerID);
         Optional <LeaveApplication> leaveApplication = leaveApplicationService.findLeaveApplicationById(ID);
 		List<LeaveApplication> overlappingLeaveApplications = new ArrayList<LeaveApplication>();
@@ -100,10 +108,13 @@ public class ManagerController {
     }
 
 	@GetMapping("/viewempspecificleave")
-	public String viewleavedetails(@RequestParam("id") String id, Model model){
+	public String viewleavedetails(@AuthenticationPrincipal UserDetails userDetails,@RequestParam("id") String id, Model model){
         Long ID = Long.parseLong(id);
+		String ManagerID = userDetails.getUsername();
+		User user = userService.getUserByUsername(ManagerID);
         Optional <LeaveApplication> leaveApplication = leaveApplicationService.findLeaveApplicationById(ID);
         if (leaveApplication.isPresent()){
+			model.addAttribute("fullName", user.getFullName());
             model.addAttribute("leaveApplication", leaveApplication.get());
 			model.addAttribute("view", "view");
 			model.addAttribute("message", null);
@@ -120,12 +131,13 @@ public class ManagerController {
 	@PostMapping("/finaliseoutcome")
 	public String finaliseOutcome(@AuthenticationPrincipal UserDetails userDetails,@RequestParam("id") String id, @RequestParam("finalstatus") String finalstatus,
 	@RequestParam("managerComment") String managerComment, Model model){
-		Long ID = Long.parseLong(id);
 		String ManagerID = userDetails.getUsername();
+		User user = userService.getUserByUsername(ManagerID);
 		List<User> subordinateList = userService.findSubordinateByManagerID(ManagerID);
 		LeaveApplication leaveApplication = leaveApplicationService.findLeaveApplicationById((Long.parseLong(id))).get();
 		List<LeaveApplication> overlappingLeaveApplications = leaveApplicationService.findOverlappingSubordinateLeave(leaveApplication, subordinateList);
 		leaveApplication.setUser(leaveApplication.getUser());
+		model.addAttribute("fullName", user.getFullName());
 		if (finalstatus.equals("NONE")){
 			model.addAttribute("leaveApplication",leaveApplication);
 			model.addAttribute("overlapLeave", overlappingLeaveApplications);

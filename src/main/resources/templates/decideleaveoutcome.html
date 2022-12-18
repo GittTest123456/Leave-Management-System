@@ -13,6 +13,11 @@
 
 <body>
     <div class="container my-2 center">
+        <h6>My Staff ID </td>
+            <td><span sec:authentication="name">Username</span>
+        </h6>            <h6>My Full Name </td>
+            <td><span th:text=${fullName}></span>
+        </h6>
         <span th:unless="${view == 'decide'}">
             <h3>Surbordinate Leave Details for View</h3>
             <h5 th:text="${info}"></h5>

@@ -22,7 +22,13 @@
         <h3 th:unless="${view == 'leaveforapproval'}">All Subordinates Leave Applications</h3>
         The leave applications are sorted based on subordinates. You may view the details of each leave application by
         clicking on the respective link.
-        <br><br>
+        <br><u>Legend of leave application status:</u>
+        <br> PENDING: Staff awaiting for decision outcome (either Approved or Rejected).
+        <br> APPROVED: Staff can go for the intended leave.
+        <br> REJECTED: Staff cannot go for the intended leave.
+        <br> CANCELLED: Staff cancel the leave after approval and not going for the intended leave.
+        <br> DELETED: Staff deleted the leave application when it is pending. 
+        <br>
         <p th:if="${view == 'leaveforapproval'}">For these pending leave applications, you may accept or reject them</p>
         <p th:if="${view == 'leaveapproval'}">
         <p th:if="${leaveApplicationList == null}"> No relevant leave applications for your view.</p>

@@ -77,6 +77,7 @@ public class UserServiceImpl implements UserService{
             if (user.getJobGrade().equals("ISS03")){
                 staffRetrieved.setReportingStaffID("None");
             }
+            staffRetrieved.setPassword(user.getPassword());
             staffRetrieved.setJobGrade(user.getJobGrade());
             DefaultLeaveEntitlement userLeaveEntitlement = defaultLeaveService.findByJobGrade(user.getJobGrade()).get();
             staffRetrieved.setRoles(null);
@@ -108,7 +109,8 @@ public class UserServiceImpl implements UserService{
                 return false;}}
                 setUserRolesByJobGrade(user,employee, manager, admin);
                 userRepo.save(user);
-                leaveBalanceService.saveLeaveBalance(userLeaveBalance);}
+                leaveBalanceService.saveLeaveBalance(userLeaveBalance);
+                return true;}
        return false;
     }
 

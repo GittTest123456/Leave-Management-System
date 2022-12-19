@@ -57,7 +57,7 @@ public class AdminController {
 	RestTemplate restTemplate;
 	@Autowired
     private UserValidator userValidator;
-    @InitBinder
+    @InitBinder("staff")
     private void initLeaveApplicationBinder(WebDataBinder binder){
         binder.addValidators(userValidator);
     }

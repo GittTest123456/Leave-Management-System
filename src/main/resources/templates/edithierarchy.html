@@ -30,6 +30,9 @@
         <tr><td><label for="designation">Designation</label></td>
             <td><input type="text" th:field="*{designation}"readonly /> 
                </td> </tr>
+               <tr>
+                <td><label for="jobGrade">Job Grade</label></td>
+                <td><input type="text" th:field="*{jobGrade}" readonly/> </td> </tr>
                <tr><td><label for="email">Email</label></td>
                 <td><input type="text" th:field="*{email}"readonly /> 
                    </td> </tr>
@@ -39,6 +42,9 @@
                        <tr><td><label for="reportingStaffID"><b>Reporting Staff ID*</b></label></td>
                         <td><input type="text" th:field="*{reportingStaffID}"/> <span class="alert alert-warning" th:if="${#fields.hasErrors('reportingStaffID')}"
                             th:errors="*{reportingStaffID}"></td></tr> 
+                            <tr>
+                                <td><label for="password"></label></td>
+                                <td><input type="hidden" th:field="*{password}"/> </td> </tr>
 <tr><td colspan="2"><br>
         <input type="submit" value="Update Staff Approval Hierarchy" /></td></tr>
     </form>

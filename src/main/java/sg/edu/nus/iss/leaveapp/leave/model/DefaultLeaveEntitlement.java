@@ -36,6 +36,10 @@ public class DefaultLeaveEntitlement {
             this.annualLeave = 14.0;
             this.medicalLeave = 60.0;
         }
+        if (jobGrade.equals("ISS03")){
+            this.annualLeave = 0.0;
+            this.medicalLeave = 0.0;
+        }
     }
 
     @OneToMany(mappedBy="defaultLeaveEntitlement")

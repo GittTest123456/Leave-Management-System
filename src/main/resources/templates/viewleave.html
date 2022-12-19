@@ -27,7 +27,8 @@
         <br> PENDING: After applying or updating intended leave and days deducted from leave balance first
         <br> APPROVED: Intended leave actualised and you can go for your intended leave:)
         <br> REJECTED: Leave days returned back and you cannot go for your intended leave:(
-        <br> CANCELLED: Leave days are returned and you are not going on your approved leave
+        <br> CANCELLED: Only applicable for approved leave. Leave days are returned back and you are not going on your approved leave.
+        <br> DELETED: Only applicable for pending leave. Leave days returned back and you cannot go for your intended leave.
         <br>
         <p th:if="${leaveApplicationList == null}"><br><b> You have no leave records in the system thus far.</b></p>
         <br>

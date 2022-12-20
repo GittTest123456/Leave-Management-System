@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,10 +22,17 @@ public class LeaveBalance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Min(value = 0L, message = "The value must be positive")
+    @NotNull
     private Double annualLeave;
+    @Min(value = 0L, message = "The value must be positive")
+    @NotNull
     private Double medicalLeave;
+    @Min(value = 0L, message = "The value must be positive")
+    @NotNull
     private Double compensationLeave;
+    @Min(value = 0L, message = "The value must be positive")
+    @NotNull
     private Long overtimeHours;
 
     public LeaveBalance(User user){

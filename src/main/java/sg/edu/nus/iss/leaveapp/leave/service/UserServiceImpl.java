@@ -176,6 +176,61 @@ public class UserServiceImpl implements UserService{
         return userRepo.findByReportingStaffID(managerID);
     }
 
+    @Override
+    public List<User> findUsersByJobGrade(String jobGrade){
+        return userRepo.findByJobGrade(jobGrade);
+    }
+
+    @Override
+    @Transactional
+    public boolean updateDefaultLeaveEntitlement(DefaultLeaveEntitlement leaveEntitlement){
+        List<User> users = findUsersByJobGrade(leaveEntitlement.getJobGrade());
+        DefaultLeaveEntitlement original = defaultLeaveService.findByJobGrade(leaveEntitlement.getJobGrade()).get();
+        double annualLeaveDifference = leaveEntitlement.getAnnualLeave() - original.getAnnualLeave();
+        double medicalLeaveDifference = leaveEntitlement.getMedicalLeave() - original.getMedicalLeave();
+        original.setAnnualLeave(leaveEntitlement.getAnnualLeave());
+        original.setMedicalLeave(leaveEntitlement.getMedicalLeave());
+        defaultLeaveService.saveDefaultLeaveEntitlement(original);
+        for (User staff: users){
+            LeaveBalance leaveBalance = leaveBalanceService.getLeaveBalanceByUser(staff);
+            Double originalAnnualLeaveBalance = staff.getStaffleave().getAnnualLeave();
+            Double originalMedicalLeaveBalance = staff.getStaffleave().getMedicalLeave();
+            Double finalAnnualLeaveBalance = originalAnnualLeaveBalance + annualLeaveDifference;
+            Double finalMedicalLeaveBalance = originalMedicalLeaveBalance + medicalLeaveDifference;
+            if (finalAnnualLeaveBalance<0){
+                finalAnnualLeaveBalance = 0.0;
+            }
+            if (finalMedicalLeaveBalance<0){
+                finalMedicalLeaveBalance = 0.0;
+            }
+            leaveBalance.setAnnualLeave(finalAnnualLeaveBalance);
+            leaveBalance.setMedicalLeave(finalMedicalLeaveBalance);
+            leaveBalanceService.saveLeaveBalance(leaveBalance);
+        }
+        return true;
+
+    }
+
+    @Override
+    public boolean updateStaffLeave(LeaveBalance leaveBalance){
+        String staffID = leaveBalance.getUser().getUsername();
+        User staff = getUserByUsername(staffID);
+        LeaveBalance original = leaveBalanceService.getLeaveBalanceByUser(staff);
+        DefaultLeaveEntitlement staffleaveentitlement = defaultLeaveService.findByJobGrade(staff.getJobGrade()).get();
+        if (leaveBalance.getAnnualLeave() > staffleaveentitlement.getAnnualLeave()){
+            return false;
+        }
+        if (leaveBalance.getMedicalLeave() > staffleaveentitlement.getMedicalLeave()){
+            return false;
+        }
+        original.setAnnualLeave(leaveBalance.getAnnualLeave());
+        original.setMedicalLeave(leaveBalance.getMedicalLeave());
+        original.setCompensationLeave(leaveBalance.getCompensationLeave());
+        original.setOvertimeHours(leaveBalance.getOvertimeHours());
+        leaveBalanceService.saveLeaveBalance(original);
+        return true;
+    }
+
 
     
 }

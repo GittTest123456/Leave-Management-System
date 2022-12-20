@@ -1,4 +1,4 @@
-<!--<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -18,42 +18,35 @@
             <td><span th:text=${fullName}></span>
         </h6>
         <h3> Manage Leave Types </h3>
+        <h6>The leave types and details of each job grade is indicated here. You may update them by clicking on the update button.
+            <br> Once the leave details tagged to a specific job grade is updated, all staff with that job grade will have their leave balance
+            <br> updated according based on the change (whether increase or decrease in leave entitlement).
+        </h6>
             <table border="1">
                 <tr>
-                    <th colspan="4">List of Public Holidays</th>
+                    <th colspan="4">Leave Types and Details for Job Grades</th>
                 </tr>
                 <tr>
-                    <td>Date of Public Holiday</td>
-                    <td>Name of Public Holiday</td>
-                    <td>Edit</td>
-                    <td>Delete</td>
+                    <td>Job Grade</td>
+                    <td>Annual Leave (days)</td>
+                    <td>Medical Leave (days)</td>
                 </tr>
-                <tr th:each="hol: ${publicHol}">
-                    <td th:text="${hol.dateOfPublicHol}"></td>
-                    <td th:text="${hol.nameOfPublicHol}"></td>
+                <tr th:each="leave: ${leavetypes}">
+                    <td th:text="${leave.jobGrade}"></td>
+                    <td th:text="${leave.annualLeave}"></td>
+                    <td th:text="${leave.medicalLeave}"></td>
                     <td>
-                        <form th:object="${hol}" th:action="@{/adm/publichol/update}" method="POST">
-                            <input type="hidden" name="id" th:value="${hol.id}" />
-                            <input type="hidden" name="dateOfPublicHol" th:value="${hol.dateOfPublicHol}" />
-                            <input type="hidden" name="nameOfPublicHol" th:value="${hol.nameOfPublicHol}" />
+                        <form th:object="${hol}" th:action="@{/adm/updateleavetypes}" method="POST">
+                            <input type="hidden" name="jobGrade" th:value="${leave.jobGrade}" />
+                            <input type="hidden" name="annualLeave" th:value="${leave.annualLeave}" />
+                            <input type="hidden" name="medicalLeave" th:value="${leave.medicalLeave}" />
                             <input type="submit" value="Update">
-                        </form>
-                    </td>
-                    <td>
-                        <form th:action="@{/adm/publichol/delete}" th:object="${hol}" method="POST">
-                            <input type="hidden" name="id" th:value="${hol.id}" />
-                            <input type="hidden" name="dateOfPublicHol" th:value="${hol.dateOfPublicHol}" />
-                            <input type="hidden" name="nameOfPublicHol" th:value="${hol.nameOfPublicHol}" />
-                            <input type="submit" value="Delete">
                         </form>
                     </td>
                 </tr>
 
             </table>
-</body>
-<br>
-<a th:href="@{/adm/addpublichol}" class="btn btn-primary btn-sm mb-3">Add new Public Holiday</a>
-<br>
+</body><br>
 <a th:href="@{/admin}">RETURN TO ADMIN PAGE</a>
 <br>
 <a th:href="@{/welcome}">RETURN TO HOME PAGE</a>

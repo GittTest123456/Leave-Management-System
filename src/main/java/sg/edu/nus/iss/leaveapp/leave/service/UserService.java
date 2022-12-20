@@ -3,6 +3,8 @@ package sg.edu.nus.iss.leaveapp.leave.service;
 import java.util.List;
 import java.util.Optional;
 
+import sg.edu.nus.iss.leaveapp.leave.model.DefaultLeaveEntitlement;
+import sg.edu.nus.iss.leaveapp.leave.model.LeaveBalance;
 import sg.edu.nus.iss.leaveapp.leave.model.User;
 
 public interface UserService {
@@ -22,5 +24,11 @@ public interface UserService {
     Boolean updateHierarchy(User staff);
 
     Boolean updateAccess(User staff);
+
+    List<User> findUsersByJobGrade(String jobGrade);
+
+    boolean updateDefaultLeaveEntitlement(DefaultLeaveEntitlement leave);
+
+    boolean updateStaffLeave(LeaveBalance leaveBalance);
     
 }

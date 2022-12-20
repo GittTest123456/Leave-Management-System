@@ -1,31 +1,9 @@
 package sg.edu.nus.iss.leaveapp.leave;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.springframework.boot.CommandLineRunner;
-
-// import java.rmi.ServerException;
-// import java.io.Console;
-// import java.time.Duration;
-// import java.time.LocalDateTime;
-// import java.time.OffsetDateTime;
-// import java.util.ArrayList;
-// import java.util.List;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-// import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
-// import org.springframework.http.HttpHeaders;
-// import org.springframework.http.HttpStatus;
-// import org.springframework.http.MediaType;
-// import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.client.RestTemplate;
@@ -34,7 +12,6 @@ import sg.edu.nus.iss.leaveapp.leave.model.DefaultLeaveEntitlement;
 import sg.edu.nus.iss.leaveapp.leave.model.LeaveApplication;
 import sg.edu.nus.iss.leaveapp.leave.model.LeaveBalance;
 import sg.edu.nus.iss.leaveapp.leave.model.LeaveEventEnum;
-import sg.edu.nus.iss.leaveapp.leave.model.PublicHoliday;
 import sg.edu.nus.iss.leaveapp.leave.model.Role;
 import sg.edu.nus.iss.leaveapp.leave.model.User;
 import sg.edu.nus.iss.leaveapp.leave.service.DefaultLeaveEntitlementService;
@@ -43,10 +20,6 @@ import sg.edu.nus.iss.leaveapp.leave.service.LeaveBalanceService;
 import sg.edu.nus.iss.leaveapp.leave.service.PublicHolidayService;
 import sg.edu.nus.iss.leaveapp.leave.service.RoleService;
 import sg.edu.nus.iss.leaveapp.leave.service.UserService;
-
-// import reactor.core.publisher.Flux;
-// import reactor.core.publisher.Mono;
-
 
 @SpringBootApplication
 @EnableJpaRepositories
@@ -66,9 +39,9 @@ public class LeaveWebApplication {
 	DefaultLeaveEntitlementService defaultLeaveEntitlementService,PublicHolidayService publicHolService, LeaveApplicationService leaveAppService){
 		return args -> {
 			System.out.println("---- Create some roles");
-			Role admin = roleService.saveRole(new Role("Admin"));
-			Role employee = roleService.saveRole(new Role("Employee"));
-			Role manager = roleService.saveRole(new Role("Manager"));
+			roleService.saveRole(new Role("Admin"));
+			roleService.saveRole(new Role("Employee"));
+			roleService.saveRole(new Role("Manager"));
 
 			System.out.println("---- Create some users");
 			User john = new User("2531", "John123@", "John Tan Meng Keng", "92887201", "John@gmail.com", "Overall Head of ISS", "None", "ISS03");
@@ -150,15 +123,19 @@ public class LeaveWebApplication {
 			//for (PublicHoliday publichol: listOfPublicHol ){
 				//publicHolService.savePublicHoliday(publichol);
 			//}
-			LeaveApplication leaveApplication = new LeaveApplication((long)2811, "annual_leave", LocalDate.now(), LocalDate.now(), "rest", "great", (long)90000000);
-			leaveApplication.setNumberOfDays(0.5);
-			leaveApplication.setHalfdayIndicator("AM");
+			LeaveApplication leaveApplication = new LeaveApplication("annual_leave", LocalDate.now(), LocalDate.now(), "rest", "great", (long)90000000);
+			leaveApplication.setNumberOfDays(1.0);
 			leaveApplication.setDateOfApplication(LocalDate.now());
 			leaveApplication.setDateOfStatus(LocalDate.now());
 			leaveApplication.setStatus(LeaveEventEnum.PENDING);
 			leaveApplication.setUser(jerry);
 			leaveAppService.saveLeaveApplication(leaveApplication);
-			LeaveApplication leaveApplication2 = new LeaveApplication((long)2811, "annual_leave", LocalDate.now(), LocalDate.now(), "rest", "great", (long)90000000);
+
+			tom = userService.getUserByUsername("1835");
+			LeaveBalance tomLeaveBalance = leaveBalanceService.getLeaveBalanceByUser(tom);
+			tomLeaveBalance.setCompensationLeave(5.0);
+			leaveBalanceService.saveLeaveBalance(tomLeaveBalance);
+			LeaveApplication leaveApplication2 = new LeaveApplication("compensation_leave", LocalDate.now(), LocalDate.now(), "rest", "great", (long)90000000);
 			leaveApplication2.setNumberOfDays(0.5);
 			leaveApplication2.setHalfdayIndicator("AM");
 			leaveApplication2.setDateOfApplication(LocalDate.now());
@@ -166,6 +143,12 @@ public class LeaveWebApplication {
 			leaveApplication2.setStatus(LeaveEventEnum.PENDING);
 			leaveApplication2.setUser(tom);
 			leaveAppService.saveLeaveApplication(leaveApplication2);
+
+			jerry = userService.getUserByUsername("5833");
+			LeaveBalance jerryLeaveBalance = leaveBalanceService.getLeaveBalanceByUser(jerry);
+			jerryLeaveBalance.setCompensationLeave(6.0);
+			leaveBalanceService.saveLeaveBalance(jerryLeaveBalance);
+
 			//LeaveApplication leaveApplication2 = new LeaveApplication((long)2811, "compensation_leave", LocalDate.now(), LocalDate.now(), "rest", "great", (long)90000000);
 			//leaveApplication.setNumberOfDays(0.5);
 			//leaveApplication.setHalfdayIndicator("AM");

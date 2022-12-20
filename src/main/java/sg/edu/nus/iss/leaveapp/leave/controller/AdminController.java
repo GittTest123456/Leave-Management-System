@@ -1,18 +1,9 @@
 package sg.edu.nus.iss.leaveapp.leave.controller;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -23,23 +14,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.server.ServerErrorException;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import sg.edu.nus.iss.leaveapp.leave.model.DefaultLeaveEntitlement;
+import sg.edu.nus.iss.leaveapp.leave.model.LeaveBalance;
 import sg.edu.nus.iss.leaveapp.leave.model.PublicHoliday;
 import sg.edu.nus.iss.leaveapp.leave.model.User;
 import sg.edu.nus.iss.leaveapp.leave.service.DefaultLeaveEntitlementService;
+import sg.edu.nus.iss.leaveapp.leave.service.LeaveBalanceService;
 import sg.edu.nus.iss.leaveapp.leave.service.PublicHolidayService;
 import sg.edu.nus.iss.leaveapp.leave.service.UserService;
 import sg.edu.nus.iss.leaveapp.leave.validator.UserValidator;
@@ -51,6 +36,8 @@ public class AdminController {
 	private UserService userService;
 	@Autowired
 	private PublicHolidayService publicHolService;
+	@Autowired
+	private LeaveBalanceService leaveBalanceService;
 	@Autowired
 	private DefaultLeaveEntitlementService defaultLeaveEntitlementService;
 	@Autowired
@@ -73,9 +60,52 @@ public class AdminController {
 		return "managestaff";
 	}
     @GetMapping("/managestaffleave")
-	public String manageStaffLeave() {
+	public String manageStaffLeave(@AuthenticationPrincipal UserDetails userDetails,Model model) {
+		String staffID = userDetails.getUsername();
+        User user = userService.getUserByUsername(staffID);
+		model.addAttribute("fullName",user.getFullName());
+        List<LeaveBalance> staffLeaveBalance = leaveBalanceService.getAllLeaveBalance();
+		staffLeaveBalance = staffLeaveBalance.stream().sorted((p1,p2)-> p1.getUser().getUsername().compareTo(p2.getUser().getUsername())).collect(Collectors.toList());
+        model.addAttribute("staffleavebalance", staffLeaveBalance);
 		return "managestaffleave";
 	}
+
+	@PostMapping("/updatestaffleave")
+	public String updateStaffLeave(@AuthenticationPrincipal UserDetails userDetails,@ModelAttribute(value="leavebalance")LeaveBalance leaveBalance, Model model){
+		String staffID = userDetails.getUsername();
+        User user = userService.getUserByUsername(staffID);
+		model.addAttribute("fullName",user.getFullName());
+		model.addAttribute("leavebalance", leaveBalance);
+		model.addAttribute("error","");
+		return "editstaffleave";
+	}
+
+	@PostMapping("/submitupdatestaffleave")
+	public String submitUpdateStaffLeave (@AuthenticationPrincipal UserDetails userDetails,
+	@Valid @ModelAttribute(value="leavebalance")LeaveBalance leaveBalance, BindingResult bindingResult, Model model) throws Exception{
+		String staffID = userDetails.getUsername();
+		User user = userService.getUserByUsername(staffID);
+		model.addAttribute("fullName",user.getFullName());
+		if (bindingResult.hasErrors()){
+			return "editstaffleave";}
+		else{
+			boolean success = userService.updateStaffLeave(leaveBalance);
+		if (success){
+			model.addAttribute("leavebalance", leaveBalance);
+			model.addAttribute("error","");
+			model.addAttribute("action", "successful");
+			return "submitstaffleave";
+		}
+		else{
+			model.addAttribute("error", "Error(s): The annual and/or medical leave balance entered is/are greater than the staff leave entitlement. Please rectify and try again.");
+			model.addAttribute("action", "unsuccessful");
+			return "submitstaffleave";
+		}
+		}
+	
+	}
+
+
 
     @GetMapping("/managecalendar")
 	public String viewCalendar(@AuthenticationPrincipal UserDetails userDetails, Model model) throws JsonMappingException, JsonProcessingException {
@@ -277,6 +307,36 @@ public class AdminController {
 		List<DefaultLeaveEntitlement> leaveTypes = defaultLeaveEntitlementService.getAll();
 		model.addAttribute("leavetypes", leaveTypes);
 		return "manageleavetypes";
+	}
+
+	@PostMapping("/updateleavetypes")
+	public String updateLeaveTypes(@AuthenticationPrincipal UserDetails userDetails,@ModelAttribute(value="leave")DefaultLeaveEntitlement leave, Model model){
+		String staffID = userDetails.getUsername();
+        User user = userService.getUserByUsername(staffID);
+		model.addAttribute("fullName",user.getFullName());
+		model.addAttribute("leave",leave);
+		return "editleavetypes";
+	}
+
+	@PostMapping("/submitupdateleavetypes")
+	public String submitUpdateLeaveTypes(@AuthenticationPrincipal UserDetails userDetails,
+	@Valid @ModelAttribute(value="leave")DefaultLeaveEntitlement leave, BindingResult bindingResult, Model model) throws Exception{
+		String staffID = userDetails.getUsername();
+		User user = userService.getUserByUsername(staffID);
+		model.addAttribute("fullName",user.getFullName());
+		if (bindingResult.hasErrors()){
+			return "editleavetypes";}
+		else{
+			boolean success = userService.updateDefaultLeaveEntitlement(leave) ;
+		if (success){
+			model.addAttribute("leave", leave);
+			return "submitleavetypes";
+		}
+		else{
+			throw new Exception("InternalServerError");
+		}
+		}
+	
 	}
 
 	@GetMapping("/managehierarchy")

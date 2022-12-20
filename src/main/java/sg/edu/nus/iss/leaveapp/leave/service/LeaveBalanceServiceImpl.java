@@ -1,5 +1,7 @@
 package sg.edu.nus.iss.leaveapp.leave.service;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +74,11 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService {
         }
         leaveBalanceRepo.save(leaveBalance);
         
+    }
+
+    @Override
+    public List<LeaveBalance> getAllLeaveBalance(){
+        return leaveBalanceRepo.findAll();
     }
     
 }

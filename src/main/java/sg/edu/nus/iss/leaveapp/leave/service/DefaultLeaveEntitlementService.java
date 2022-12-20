@@ -12,6 +12,5 @@ public interface DefaultLeaveEntitlementService {
    DefaultLeaveEntitlement saveDefaultLeaveEntitlement(DefaultLeaveEntitlement leaveEntitlement);
 
    List<DefaultLeaveEntitlement> getAll();
-
-    
+  
 }

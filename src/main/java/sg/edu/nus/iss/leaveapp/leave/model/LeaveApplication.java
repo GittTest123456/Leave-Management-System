@@ -56,7 +56,7 @@ public class LeaveApplication {
 
     private String managerComment;
 
-    public LeaveApplication(Long staffID, String leaveType, LocalDate startDate, LocalDate endDate, String reason, String dissemination, Long contactNumber){
+    public LeaveApplication(String leaveType, LocalDate startDate, LocalDate endDate, String reason, String dissemination, Long contactNumber){
         this.leaveType = leaveType;
         this.startDate = startDate;
         this.endDate = endDate;

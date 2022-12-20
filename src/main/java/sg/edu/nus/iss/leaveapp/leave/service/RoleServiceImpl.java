@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import sg.edu.nus.iss.leaveapp.leave.model.Role;
 import sg.edu.nus.iss.leaveapp.leave.repository.RoleRepository;
-import sg.edu.nus.iss.leaveapp.leave.model.User;
 
 @Service
 public class RoleServiceImpl implements RoleService{

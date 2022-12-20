@@ -5,10 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import sg.edu.nus.iss.leaveapp.leave.model.DefaultLeaveEntitlement;
-import sg.edu.nus.iss.leaveapp.leave.model.User;
 import sg.edu.nus.iss.leaveapp.leave.repository.DefaultLeaveEntitlementRepository;
 
 @Service

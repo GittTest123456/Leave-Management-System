@@ -1,8 +1,6 @@
 package sg.edu.nus.iss.leaveapp.leave.service;
 
 import java.util.List;
-import java.util.Optional;
-
 import sg.edu.nus.iss.leaveapp.leave.model.DefaultLeaveEntitlement;
 import sg.edu.nus.iss.leaveapp.leave.model.LeaveBalance;
 import sg.edu.nus.iss.leaveapp.leave.model.User;

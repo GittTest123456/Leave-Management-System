@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Repository;
 
 import sg.edu.nus.iss.leaveapp.leave.model.Role;
-import sg.edu.nus.iss.leaveapp.leave.model.User;
+
 @EnableJpaRepositories
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {

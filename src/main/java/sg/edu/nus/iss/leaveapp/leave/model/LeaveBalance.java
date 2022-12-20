@@ -1,6 +1,5 @@
 package sg.edu.nus.iss.leaveapp.leave.model;
 
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
